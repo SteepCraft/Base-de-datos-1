@@ -16,8 +16,8 @@ CREATE TABLE producto (
 );
 ALTER TABLE producto
     ADD CONSTRAINT chk_precio_pos CHECK (precio_producto > 0);
-    
-    
+
+
 CREATE TABLE proveedor (
     id_proveedor     VARCHAR2(10) PRIMARY KEY,
     nom_proveedor    VARCHAR2(50) ,
@@ -39,7 +39,7 @@ CREATE TABLE ventas (
 );
 ALTER TABLE ventas
 ADD CONSTRAINT chk_valor_tot CHECK (valor_tot > 0);
-    
+
 
 CREATE TABLE detalle_venta (
     codi_venta       NUMBER NOT NULL,
@@ -105,3 +105,19 @@ CREATE TABLE suministros (
 );
 ALTER TABLE suministros
   ADD CONSTRAINT unq_codi_producto_sumin UNIQUE (codi_producto);
+
+CREATE TABLE usuario (
+    id_usuario      VARCHAR2(10) PRIMARY KEY,
+    nom_usuario     VARCHAR2(50) NOT NULL,
+    ape_usuario     VARCHAR2(50) NOT NULL,
+    email_usuario   VARCHAR2(100) NOT NULL,
+    num_tel_usuario VARCHAR2(10),
+    fecha_registro  DATE DEFAULT SYSDATE,
+    foto_perfil     VARCHAR2(255),
+    estado          VARCHAR2(20) DEFAULT 'ACTIVO'
+);
+
+ALTER TABLE usuario
+  ADD CONSTRAINT unq_email_usuario UNIQUE (email_usuario);
+  ADD CONSTRAINT unq_tel_usuario UNIQUE (num_tel_usuario);
+  ADD CONSTRAINT chk_estado_usuario CHECK (estado IN ('ACTIVO', 'INACTIVO', 'SUSPENDIDO'));

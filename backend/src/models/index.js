@@ -7,3 +7,4 @@ export { default as Compras } from "./compras.model.js";
 export { default as DetalleCompras } from "./detalle_compras.model.js";
 export { default as Inventario } from "./inventario.model.js";
 export { default as Suministros } from "./suministros.model.js";
+export { default as Usuario } from "./usuario.model.js";

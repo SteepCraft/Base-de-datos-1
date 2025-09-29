@@ -1,5 +1,5 @@
 import { sequelize } from "./sequelize.js";
-import { Cliente, Producto, Proveedor, Ventas, DetalleVenta, Compras, DetalleCompras, Inventario, Suministros } from "../models/index.js";
+import { Cliente, Producto, Proveedor, Ventas, DetalleVenta, Compras, DetalleCompras, Inventario, Suministros, Usuario } from "../models/index.js";
 
 (async () => {
   try {
@@ -16,6 +16,7 @@ import { Cliente, Producto, Proveedor, Ventas, DetalleVenta, Compras, DetalleCom
       ["DetalleCompras", DetalleCompras],
       ["Inventario", Inventario],
       ["Suministros", Suministros],
+      ["Usuario", Usuario],
     ];
     for (const [nombre, modelo] of modelos) {
       try {

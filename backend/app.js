@@ -50,6 +50,7 @@ import comprasRoutes from "./src/routes/compras.routes.js";
 import detalleComprasRoutes from "./src/routes/detalle_compras.routes.js";
 import inventarioRoutes from "./src/routes/inventario.routes.js";
 import suministrosRoutes from "./src/routes/suministros.routes.js";
+import usuarioRoutes from "./src/routes/usuario.routes.js";
 
 app.use("/api/clientes", clienteRoutes);
 app.use("/api/productos", productoRoutes);
@@ -60,5 +61,6 @@ app.use("/api/compras", comprasRoutes);
 app.use("/api/detalle-compras", detalleComprasRoutes);
 app.use("/api/inventario", inventarioRoutes);
 app.use("/api/suministros", suministrosRoutes);
+app.use("/api/usuarios", usuarioRoutes);
 
 export default app;
