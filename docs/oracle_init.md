@@ -25,7 +25,30 @@ docker run -d \
 
 ## 3. Acceder a la base de datos
 
-Puedes conectarte usando SQL*Plus, DBeaver, Oracle SQL Developer, etc. Los datos de conexión son:
+### Conexión como System (administrador)
+
+Para conectarte como usuario `system` (administrador), puedes usar cualquiera de estos métodos:
+
+1. Usando SQLPlus dentro del contenedor:
+```bash
+docker exec -it oracle-xe sqlplus system/123@localhost/XEPDB1
+```
+
+2. Usando SQLPlus desde tu máquina (si lo tienes instalado):
+```bash
+sqlplus system/123@localhost:1521/XEPDB1
+```
+
+3. Usando una herramienta gráfica (DBeaver, Oracle SQL Developer, etc):
+- **Host:** localhost
+- **Puerto:** 1521
+- **Usuario:** system
+- **Contraseña:** 123 (la que definiste en ORACLE_PASSWORD)
+- **SID/Service:** XEPDB1
+
+### Conexión como usuario normal
+
+Para otros usuarios (como `sanaya`), los datos de conexión son:
 
 - **Host:** localhost
 - **Puerto:** 1521
@@ -38,7 +61,7 @@ Puedes conectarte usando SQL*Plus, DBeaver, Oracle SQL Developer, etc. Los datos
 1. Conéctate como `system` y ejecuta:
 
 ```sql
-CREATE USER sanaya IDENTIFIED BY sanaya;
+CREATE USER sanaya IDENTIFIED BY 123;
 GRANT CONNECT, RESOURCE, DBA TO sanaya;
 ALTER USER sanaya DEFAULT TABLESPACE USERS;
 ```
