@@ -1,0 +1,15 @@
+{
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "editorconfig.editorconfig",
+    "bradlc.vscode-tailwindcss",
+    "ms-vscode.vscode-json",
+    "formulahendry.auto-rename-tag",
+    "christian-kohler.path-intellisense",
+    "typescript-eslint.typescript-eslint",
+    "github.vscode-pull-request-github",
+    "pkief.material-icon-theme",
+    "mhutchie.git-graph"
+  ]
+}

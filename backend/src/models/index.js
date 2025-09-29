@@ -1,0 +1,9 @@
+export { default as Cliente } from "./cliente.model.js";
+export { default as Producto } from "./producto.model.js";
+export { default as Proveedor } from "./proveedor.model.js";
+export { default as Ventas } from "./ventas.model.js";
+export { default as DetalleVenta } from "./detalle_venta.model.js";
+export { default as Compras } from "./compras.model.js";
+export { default as DetalleCompras } from "./detalle_compras.model.js";
+export { default as Inventario } from "./inventario.model.js";
+export { default as Suministros } from "./suministros.model.js";
