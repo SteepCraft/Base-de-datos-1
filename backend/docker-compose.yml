@@ -1,15 +1,16 @@
 version: "3.8"
+
 services:
   oracle-xe:
     image: gvenzl/oracle-xe:21.3.0-slim
     container_name: oracle-xe
-    environment:
-      ORACLE_PASSWORD: "123"
     ports:
       - "1521:1521"
+    environment:
+      ORACLE_PASSWORD: "123"
     volumes:
       - oracle-data:/opt/oracle/oradata
-    restart: unless-stopped
+      - ./init.sql:/container-entrypoint-initdb.d/init.sql
 
 volumes:
   oracle-data:
