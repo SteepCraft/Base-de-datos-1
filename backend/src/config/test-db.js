@@ -1,6 +1,6 @@
 import { sequelize } from "./sequelize.js";
 import { Cliente, Producto, Proveedor, Ventas, DetalleVenta, Compras, DetalleCompras, Inventario, Suministros, Usuario } from "../models/index.js";
-
+//puede llegar a fallar por el puerto si se llega a modificar (en .env)
 (async () => {
   try {
     await sequelize.authenticate();
