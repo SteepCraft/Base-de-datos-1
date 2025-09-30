@@ -4,7 +4,8 @@ class UsuarioController {
   static async getAllUsuarios(req, res) {
     try {
       const usuarios = await models.Usuario.findAll();
-      res.json(usuarios);
+      const { password: _, ...usuariosSafe } = usuarios.map(u => u.toJSON());
+      res.json(usuariosSafe);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -77,7 +78,8 @@ class UsuarioController {
         });
       }
 
-      return res.json(usuario);
+      const { password: _, ...usuarioSafe } = usuario;
+      return res.json(usuarioSafe);
     } catch (error) {
       return res.status(500).json({ error: error.message });
     }
@@ -99,7 +101,8 @@ class UsuarioController {
     }
     try {
       const usuario = await models.Usuario.create(req.body);
-      res.status(201).json(usuario);
+      const { password: _, ...usuarioSafe } = usuario.toJSON();
+      res.status(201).json(usuarioSafe);
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
@@ -123,7 +126,8 @@ class UsuarioController {
       if (!updated)
         return res.status(404).json({ error: "Usuario no encontrado" });
       const usuario = await models.Usuario.findByPk(req.params.id);
-      res.json(usuario);
+      const { password: _, ...usuarioSafe } = usuario.toJSON();
+      res.json(usuarioSafe);
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
