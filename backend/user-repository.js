@@ -1,12 +1,11 @@
 import { z } from "zod";
 
 const userSchema = z.object({
-  id_usuario: z.uuid(),
-  nom_usuario: z.string().min(2).max(100),
-  ape_usuario: z.string().min(2).max(100),
-  email_usuario: z.email(),
-  num_tel_usuario: z.string().min(10).max(10).optional(),
-  fecha_registro: z.date().optional(),
+  email: z.email(),
+  contrasena: z.string().min(8).max(100),
+  nombres: z.string().min(2).max(100),
+  apellidos: z.string().min(2).max(100),
+  telefono: z.string().min(10).max(10).optional(),
   foto_perfil: z.url({ protocol: /^https$/ }).optional(),
   estado: z.enum(["ACTIVO", "INACTIVO", "SUSPENDIDO"]).optional(),
 });

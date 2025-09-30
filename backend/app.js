@@ -1,12 +1,71 @@
 import { randomBytes } from "crypto";
-
 import express from "express";
 import { rateLimit } from "express-rate-limit";
+
+import { sequelize } from "./src/config/sequelize.js";
+import models from "./src/models/index.js";
+import applyAssociations from "./src/models/associations.js";
 
 console.log("✅ Configuración completa cargada correctamente");
 
 const app = express();
 
+/**
+ * Inicialización de Sequelize
+ */
+(async () => {
+  try {
+    // Cargar asociaciones
+    applyAssociations(models);
+
+    // Probar conexión
+    await sequelize.authenticate();
+    console.log("🔗 Conexión con la base de datos establecida correctamente.");
+
+    // Si quieres sincronizar los modelos con la DB
+    // await sequelize.sync({ alter: true });
+  } catch (error) {
+    console.error("❌ Error al conectar con la base de datos:", error);
+    process.exit(1);
+  }
+})();
+
+/**
+ * Middlewares globales
+ */
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Middleware para generar nonce único por solicitud
+app.use((req, res, next) => {
+  res.locals.nonce = randomBytes(16).toString("hex");
+  next();
+});
+
+// Logger básico
+app.use((req, res, next) => {
+  console.log(`Solicitud entrante: ${req.method} ${req.originalUrl}`, {
+    ip: req.ip,
+    userAgent: req.headers["user-agent"],
+    userId: req.user?.id || "anonymous",
+  });
+  next();
+});
+
+// Rate limiting
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 1000,
+  message:
+    "Demasiadas solicitudes desde esta IP, por favor intenta de nuevo después de 15 minutos.",
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use(apiLimiter);
+
+/**
+ * Rutas básicas
+ */
 app.get("/", (req, res) => {
   res.send("¡API de Ges2l funcionando correctamente!");
 });
@@ -23,39 +82,9 @@ app.get("/admin", (req, res) => {
   res.send("Admin area");
 });
 
-// --- Middleware para generar nonce único por solicitud ---
-app.use((req, res, next) => {
-  res.locals.nonce = randomBytes(16).toString("hex");
-  next();
-});
-
-app.use((req, res, next) => {
-  console.log(`Solicitud entrante: ${req.method} ${req.originalUrl}`, {
-    ip: req.ip,
-    userAgent: req.headers["user-agent"],
-    userId: req.user?.id || "anonymous",
-  });
-  next();
-});
-
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 1000,
-  message:
-    "Demasiadas solicitudes desde esta IP, por favor intenta de nuevo después de 15 minutos.",
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-app.use(apiLimiter);
-
 /**
- * Middlewares para parsear el cuerpo de las solicitudes
+ * Rutas CRUD
  */
-app.use(express.json());
-
-app.use(express.urlencoded({ extended: true }));
-
-// Rutas CRUD para cada modelo
 import clienteRoutes from "./src/routes/cliente.routes.js";
 import productoRoutes from "./src/routes/producto.routes.js";
 import proveedorRoutes from "./src/routes/proveedor.routes.js";

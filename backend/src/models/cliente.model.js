@@ -2,12 +2,16 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../config/sequelize.js";
 
 const Cliente = sequelize.define(
-  "CLIENTE",
+  "Cliente",
   {
     id: {
       type: DataTypes.INTEGER,
+<<<<<<< HEAD
       autoIncrement: true,
+=======
+>>>>>>> 1842c09 (Actualizaciones en sql, controllers y modelos de sequelize)
       primaryKey: true,
+      autoIncrement: true,
       allowNull: false,
       field: "ID",
     },
@@ -22,11 +26,21 @@ const Cliente = sequelize.define(
       field: "APELLIDOS",
     },
     direccion: {
+<<<<<<< HEAD
       type: DataTypes.STRING(50),
       field: "DIRECCION",
     },
     telefono: {
       type: DataTypes.STRING(10),
+=======
+      type: DataTypes.STRING(100),
+      allowNull: true,
+      field: "DIRECCION",
+    },
+    telefono: {
+      type: DataTypes.STRING(20),
+      allowNull: true,
+>>>>>>> 1842c09 (Actualizaciones en sql, controllers y modelos de sequelize)
       unique: true,
       field: "TELEFONO",
     },
@@ -34,6 +48,7 @@ const Cliente = sequelize.define(
   {
     tableName: "CLIENTE",
     timestamps: false,
+    freezeTableName: true,
   }
 );
 

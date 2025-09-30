@@ -1,10 +1,13 @@
-export { default as Cliente } from "./cliente.model.js";
-export { default as Producto } from "./producto.model.js";
-export { default as Proveedor } from "./proveedor.model.js";
-export { default as Ventas } from "./ventas.model.js";
-export { default as DetalleVenta } from "./detalle_venta.model.js";
-export { default as Compras } from "./compras.model.js";
-export { default as DetalleCompras } from "./detalle_compras.model.js";
-export { default as Inventario } from "./inventario.model.js";
-export { default as Suministros } from "./suministros.model.js";
-export { default as Usuario } from "./usuario.model.js";
+import { sequelize } from "../config/sequelize.js";
+import * as modelsExports from "./models-export.js";
+import applyAssociations from "./associations.js";
+
+// modelsExports contiene getters que al importarlos ya evaluarán
+const models = { ...modelsExports };
+
+// aplicar asociaciones
+applyAssociations(models);
+
+// exportar sequelize y modelos
+export { sequelize };
+export default models;

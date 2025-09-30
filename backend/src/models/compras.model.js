@@ -2,26 +2,34 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../config/sequelize.js";
 
 const Compras = sequelize.define(
-  "COMPRAS",
+  "Compras",
   {
     codigo: {
       type: DataTypes.INTEGER,
       primaryKey: true,
+<<<<<<< HEAD
+=======
+      allowNull: false,
+>>>>>>> 1842c09 (Actualizaciones en sql, controllers y modelos de sequelize)
       field: "CODIGO",
     },
+
     fecha_compra: {
       type: DataTypes.DATE,
+      allowNull: false,
       defaultValue: DataTypes.NOW,
       field: "FECHA_COMPRA",
     },
+
     id_proveedor: {
-      type: DataTypes.STRING(10),
-      allowNull: false,
+      type: DataTypes.STRING(20),
+      allowNull: true,
       field: "ID_PROVEEDOR",
     },
+
     tot_compras: {
-      type: DataTypes.DECIMAL(10, 2),
-      allowNull: false,
+      type: DataTypes.DECIMAL(12, 2),
+      allowNull: true,
       validate: { min: 0.01 },
       field: "TOT_COMPRAS",
     },
@@ -29,6 +37,7 @@ const Compras = sequelize.define(
   {
     tableName: "COMPRAS",
     timestamps: false,
+    freezeTableName: true,
   }
 );
 
