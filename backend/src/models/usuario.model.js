@@ -6,10 +6,14 @@ const Usuario = sequelize.define(
   {
     id: {
 <<<<<<< HEAD
+<<<<<<< HEAD
       type: DataTypes.INTEGER,
 =======
       type: DataTypes.NUMBER(10),
 >>>>>>> 1842c09 (Actualizaciones en sql, controllers y modelos de sequelize)
+=======
+      type: DataTypes.NUMBER(10),
+>>>>>>> origin/master
       primaryKey: true,
       autoIncrement: true,
       allowNull: false,
@@ -22,10 +26,14 @@ const Usuario = sequelize.define(
       field: "EMAIL",
     },
 <<<<<<< HEAD
+<<<<<<< HEAD
     contrasena: {
 =======
     password: {
 >>>>>>> 1842c09 (Actualizaciones en sql, controllers y modelos de sequelize)
+=======
+    password: {
+>>>>>>> origin/master
       type: DataTypes.STRING(255),
       allowNull: false,
       field: "CONTRASENA",
@@ -36,10 +44,14 @@ const Usuario = sequelize.define(
       field: "NOMBRES",
     },
 <<<<<<< HEAD
+<<<<<<< HEAD
     apelidos: {
 =======
     apellidos: {
 >>>>>>> 1842c09 (Actualizaciones en sql, controllers y modelos de sequelize)
+=======
+    apellidos: {
+>>>>>>> origin/master
       type: DataTypes.STRING(50),
       allowNull: false,
       field: "APELLIDOS",
@@ -47,7 +59,10 @@ const Usuario = sequelize.define(
 <<<<<<< HEAD
 =======
 
+<<<<<<< HEAD
 >>>>>>> 1842c09 (Actualizaciones en sql, controllers y modelos de sequelize)
+=======
+>>>>>>> origin/master
     telefono: {
       type: DataTypes.STRING(10),
       unique: true,
