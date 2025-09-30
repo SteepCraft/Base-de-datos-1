@@ -12,7 +12,8 @@ export async function getAllUsuarios(req, res) {
 export async function getUsuarioById(req, res) {
   try {
     const usuario = await Usuario.findByPk(req.params.id);
-    if (!usuario) return res.status(404).json({ error: "Usuario no encontrado" });
+    if (!usuario)
+      return res.status(404).json({ error: "Usuario no encontrado" });
     res.json(usuario);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -21,12 +22,21 @@ export async function getUsuarioById(req, res) {
 
 export async function createUsuario(req, res) {
   if (!req.body || typeof req.body !== "object" || Array.isArray(req.body)) {
-    return res.status(400).json({ error: "El cuerpo de la solicitud debe ser un objeto JSON válido" });
+    return res.status(400).json({
+      error: "El cuerpo de la solicitud debe ser un objeto JSON válido",
+    });
   }
-  const requiredFields = ["id_usuario", "nom_usuario", "ape_usuario", "email_usuario"];
+  const requiredFields = [
+    "id_usuario",
+    "nom_usuario",
+    "ape_usuario",
+    "email_usuario",
+  ];
   for (const field of requiredFields) {
     if (!req.body[field]) {
-      return res.status(400).json({ error: `El campo '${field}' es obligatorio` });
+      return res
+        .status(400)
+        .json({ error: `El campo '${field}' es obligatorio` });
     }
   }
   try {
@@ -39,14 +49,19 @@ export async function createUsuario(req, res) {
 
 export async function updateUsuario(req, res) {
   if (!req.body || typeof req.body !== "object" || Array.isArray(req.body)) {
-    return res.status(400).json({ error: "El cuerpo de la solicitud debe ser un objeto JSON válido" });
+    return res.status(400).json({
+      error: "El cuerpo de la solicitud debe ser un objeto JSON válido",
+    });
   }
   if (!req.params.id) {
     return res.status(400).json({ error: "El parámetro 'id' es obligatorio" });
   }
   try {
-    const [updated] = await Usuario.update(req.body, { where: { id_usuario: req.params.id } });
-    if (!updated) return res.status(404).json({ error: "Usuario no encontrado" });
+    const [updated] = await Usuario.update(req.body, {
+      where: { id_usuario: req.params.id },
+    });
+    if (!updated)
+      return res.status(404).json({ error: "Usuario no encontrado" });
     const usuario = await Usuario.findByPk(req.params.id);
     res.json(usuario);
   } catch (error) {
@@ -56,8 +71,11 @@ export async function updateUsuario(req, res) {
 
 export async function deleteUsuario(req, res) {
   try {
-    const deleted = await Usuario.destroy({ where: { id_usuario: req.params.id } });
-    if (!deleted) return res.status(404).json({ error: "Usuario no encontrado" });
+    const deleted = await Usuario.destroy({
+      where: { id_usuario: req.params.id },
+    });
+    if (!deleted)
+      return res.status(404).json({ error: "Usuario no encontrado" });
     res.json({ message: "Usuario eliminado" });
   } catch (error) {
     res.status(500).json({ error: error.message });

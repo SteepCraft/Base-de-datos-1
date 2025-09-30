@@ -30,8 +30,11 @@ export async function createCompra(req, res) {
 
 export async function updateCompra(req, res) {
   try {
-    const [updated] = await Compras.update(req.body, { where: { codi_compra: req.params.id } });
-    if (!updated) return res.status(404).json({ error: "Compra no encontrada" });
+    const [updated] = await Compras.update(req.body, {
+      where: { codi_compra: req.params.id },
+    });
+    if (!updated)
+      return res.status(404).json({ error: "Compra no encontrada" });
     const compra = await Compras.findByPk(req.params.id);
     res.json(compra);
   } catch (error) {
@@ -41,8 +44,11 @@ export async function updateCompra(req, res) {
 
 export async function deleteCompra(req, res) {
   try {
-    const deleted = await Compras.destroy({ where: { codi_compra: req.params.id } });
-    if (!deleted) return res.status(404).json({ error: "Compra no encontrada" });
+    const deleted = await Compras.destroy({
+      where: { codi_compra: req.params.id },
+    });
+    if (!deleted)
+      return res.status(404).json({ error: "Compra no encontrada" });
     res.json({ message: "Compra eliminada" });
   } catch (error) {
     res.status(500).json({ error: error.message });

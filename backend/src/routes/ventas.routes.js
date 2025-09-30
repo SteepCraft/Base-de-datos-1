@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { getAllVentas, getVentaById, createVenta } from "../controllers/ventas.controller.js";
+import {
+  getAllVentas,
+  getVentaById,
+  createVenta,
+} from "../controllers/ventas.controller.js";
 
 const router = Router();
 

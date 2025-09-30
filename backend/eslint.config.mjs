@@ -5,7 +5,6 @@ import nodePlugin from "eslint-plugin-node";
 import prettierConfig from "eslint-config-prettier/flat";
 import importPlugin from "eslint-plugin-import";
 
-
 const config = [];
 
 config.push(js.configs.recommended);
@@ -57,7 +56,6 @@ config.push({
     "handle-callback-err": "warn",
   },
 });
-
 
 // Prettier
 config.push(prettierConfig);

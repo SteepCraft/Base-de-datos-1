@@ -1,20 +1,24 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/sequelize.js";
 
-const Suministros = sequelize.define("SUMINISTROS", {
-  id_proveedor: {
-    type: DataTypes.STRING(10),
-    primaryKey: true,
-    field: "ID_PROVEEDOR"
+const Suministros = sequelize.define(
+  "SUMINISTROS",
+  {
+    id_proveedor: {
+      type: DataTypes.STRING(10),
+      primaryKey: true,
+      field: "ID_PROVEEDOR",
+    },
+    codi_producto: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      field: "CODI_PRODUCTO",
+    },
   },
-  codi_producto: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    field: "CODI_PRODUCTO"
-  },
-}, {
-  tableName: "SUMINISTROS",
-  timestamps: false,
-});
+  {
+    tableName: "SUMINISTROS",
+    timestamps: false,
+  }
+);
 
 export default Suministros;

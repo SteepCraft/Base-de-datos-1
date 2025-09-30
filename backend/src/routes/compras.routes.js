@@ -4,7 +4,7 @@ import {
   getCompraById,
   createCompra,
   updateCompra,
-  deleteCompra
+  deleteCompra,
 } from "../controllers/compras.controller.js";
 
 const router = Router();

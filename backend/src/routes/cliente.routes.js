@@ -4,7 +4,7 @@ import {
   getClienteById,
   createCliente,
   updateCliente,
-  deleteCliente
+  deleteCliente,
 } from "../controllers/cliente.controller.js";
 
 const router = Router();

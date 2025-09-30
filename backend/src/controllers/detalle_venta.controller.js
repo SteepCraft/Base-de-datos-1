@@ -17,7 +17,8 @@ export async function getDetalleVentaById(req, res) {
         codi_producto: req.params.codi_producto,
       },
     });
-    if (!detalle) return res.status(404).json({ error: "Detalle no encontrado" });
+    if (!detalle)
+      return res.status(404).json({ error: "Detalle no encontrado" });
     res.json(detalle);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -41,7 +42,8 @@ export async function updateDetalleVenta(req, res) {
         codi_producto: req.params.codi_producto,
       },
     });
-    if (!updated) return res.status(404).json({ error: "Detalle no encontrado" });
+    if (!updated)
+      return res.status(404).json({ error: "Detalle no encontrado" });
     const detalle = await DetalleVenta.findOne({
       where: {
         codi_venta: req.params.codi_venta,
@@ -62,7 +64,8 @@ export async function deleteDetalleVenta(req, res) {
         codi_producto: req.params.codi_producto,
       },
     });
-    if (!deleted) return res.status(404).json({ error: "Detalle no encontrado" });
+    if (!deleted)
+      return res.status(404).json({ error: "Detalle no encontrado" });
     res.json({ message: "Detalle eliminado" });
   } catch (error) {
     res.status(500).json({ error: error.message });

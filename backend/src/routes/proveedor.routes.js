@@ -4,7 +4,7 @@ import {
   getProveedorById,
   createProveedor,
   updateProveedor,
-  deleteProveedor
+  deleteProveedor,
 } from "../controllers/proveedor.controller.js";
 
 const router = Router();

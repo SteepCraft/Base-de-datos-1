@@ -3,10 +3,25 @@ import { randomBytes } from "crypto";
 import express from "express";
 import { rateLimit } from "express-rate-limit";
 
-
 console.log("✅ Configuración completa cargada correctamente");
 
 const app = express();
+
+app.get("/", (req, res) => {
+  res.send("¡API de Ges2l funcionando correctamente!");
+});
+
+app.post("/login", (req, res) => {
+  res.json({ user: "demo" });
+});
+
+app.post("/logout", (req, res) => {
+  res.json({ message: "Logged out" });
+});
+
+app.get("/admin", (req, res) => {
+  res.send("Admin area");
+});
 
 // --- Middleware para generar nonce único por solicitud ---
 app.use((req, res, next) => {

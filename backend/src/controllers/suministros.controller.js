@@ -17,7 +17,8 @@ export async function getSuministroById(req, res) {
         codi_producto: req.params.codi_producto,
       },
     });
-    if (!suministro) return res.status(404).json({ error: "Suministro no encontrado" });
+    if (!suministro)
+      return res.status(404).json({ error: "Suministro no encontrado" });
     res.json(suministro);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -41,7 +42,8 @@ export async function updateSuministro(req, res) {
         codi_producto: req.params.codi_producto,
       },
     });
-    if (!updated) return res.status(404).json({ error: "Suministro no encontrado" });
+    if (!updated)
+      return res.status(404).json({ error: "Suministro no encontrado" });
     const suministro = await Suministros.findOne({
       where: {
         id_proveedor: req.params.id_proveedor,
@@ -62,7 +64,8 @@ export async function deleteSuministro(req, res) {
         codi_producto: req.params.codi_producto,
       },
     });
-    if (!deleted) return res.status(404).json({ error: "Suministro no encontrado" });
+    if (!deleted)
+      return res.status(404).json({ error: "Suministro no encontrado" });
     res.json({ message: "Suministro eliminado" });
   } catch (error) {
     res.status(500).json({ error: error.message });

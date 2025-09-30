@@ -4,7 +4,7 @@ import {
   getDetalleComprasById,
   createDetalleCompras,
   updateDetalleCompras,
-  deleteDetalleCompras
+  deleteDetalleCompras,
 } from "../controllers/detalle_compras.controller.js";
 
 const router = Router();

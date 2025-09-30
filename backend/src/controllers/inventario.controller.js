@@ -30,7 +30,9 @@ export async function createInventario(req, res) {
 
 export async function updateInventario(req, res) {
   try {
-    const [updated] = await Inventario.update(req.body, { where: { codi_producto: req.params.id } });
+    const [updated] = await Inventario.update(req.body, {
+      where: { codi_producto: req.params.id },
+    });
     if (!updated) return res.status(404).json({ error: "Item no encontrado" });
     const item = await Inventario.findByPk(req.params.id);
     res.json(item);
@@ -41,7 +43,9 @@ export async function updateInventario(req, res) {
 
 export async function deleteInventario(req, res) {
   try {
-    const deleted = await Inventario.destroy({ where: { codi_producto: req.params.id } });
+    const deleted = await Inventario.destroy({
+      where: { codi_producto: req.params.id },
+    });
     if (!deleted) return res.status(404).json({ error: "Item no encontrado" });
     res.json({ message: "Item eliminado" });
   } catch (error) {

@@ -4,7 +4,7 @@ import {
   getUsuarioById,
   createUsuario,
   updateUsuario,
-  deleteUsuario
+  deleteUsuario,
 } from "../controllers/usuario.controller.js";
 
 const router = Router();

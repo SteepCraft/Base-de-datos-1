@@ -4,7 +4,7 @@ import {
   getInventarioById,
   createInventario,
   updateInventario,
-  deleteInventario
+  deleteInventario,
 } from "../controllers/inventario.controller.js";
 
 const router = Router();

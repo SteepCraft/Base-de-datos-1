@@ -4,7 +4,7 @@ import {
   getSuministroById,
   createSuministro,
   updateSuministro,
-  deleteSuministro
+  deleteSuministro,
 } from "../controllers/suministros.controller.js";
 
 const router = Router();

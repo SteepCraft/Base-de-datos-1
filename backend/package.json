@@ -20,7 +20,8 @@
     "express": "^5.1.0",
     "express-rate-limit": "^8.0.1",
     "oracledb": "^6.9.0",
-    "sequelize": "^6.37.7"
+    "sequelize": "^6.37.7",
+    "zod": "^4.1.11"
   },
   "devDependencies": {
     "eslint": "^9.34.0",
