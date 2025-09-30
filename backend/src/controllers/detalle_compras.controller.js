@@ -1,8 +1,8 @@
-import { DetalleCompras } from "../models/index.js";
+import models from "../models/index.js";
 
 export async function getAllDetalleCompras(req, res) {
   try {
-    const detalles = await DetalleCompras.findAll();
+    const detalles = await models.DetalleCompras.findAll();
     res.json(detalles);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -11,7 +11,7 @@ export async function getAllDetalleCompras(req, res) {
 
 export async function getDetalleComprasById(req, res) {
   try {
-    const detalle = await DetalleCompras.findOne({
+    const detalle = await models.DetalleCompras.findOne({
       where: {
         codi_compra: req.params.codi_compra,
         codi_producto: req.params.codi_producto,
@@ -27,7 +27,7 @@ export async function getDetalleComprasById(req, res) {
 
 export async function createDetalleCompras(req, res) {
   try {
-    const detalle = await DetalleCompras.create(req.body);
+    const detalle = await models.DetalleCompras.create(req.body);
     res.status(201).json(detalle);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -36,7 +36,7 @@ export async function createDetalleCompras(req, res) {
 
 export async function updateDetalleCompras(req, res) {
   try {
-    const [updated] = await DetalleCompras.update(req.body, {
+    const [updated] = await models.DetalleCompras.update(req.body, {
       where: {
         codi_compra: req.params.codi_compra,
         codi_producto: req.params.codi_producto,
@@ -44,7 +44,7 @@ export async function updateDetalleCompras(req, res) {
     });
     if (!updated)
       return res.status(404).json({ error: "Detalle no encontrado" });
-    const detalle = await DetalleCompras.findOne({
+    const detalle = await models.DetalleCompras.findOne({
       where: {
         codi_compra: req.params.codi_compra,
         codi_producto: req.params.codi_producto,
@@ -58,7 +58,7 @@ export async function updateDetalleCompras(req, res) {
 
 export async function deleteDetalleCompras(req, res) {
   try {
-    const deleted = await DetalleCompras.destroy({
+    const deleted = await models.DetalleCompras.destroy({
       where: {
         codi_compra: req.params.codi_compra,
         codi_producto: req.params.codi_producto,

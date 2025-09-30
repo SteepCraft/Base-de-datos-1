@@ -5,38 +5,38 @@ const Usuario = sequelize.define(
   "USUARIO",
   {
     id: {
-      type: DataTypes.STRING(10),
+      type: DataTypes.NUMBER(10),
       primaryKey: true,
       autoIncrement: true,
       allowNull: false,
-      field: "ID_USUARIO",
+      field: "ID",
     },
-    email_usuario: {
+    email: {
       type: DataTypes.STRING(100),
       allowNull: false,
       unique: true,
-      field: "EMAIL_USUARIO",
+      field: "EMAIL",
     },
-    nom_usuario: {
+    password: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+      field: "CONTRASENA",
+    },
+    nombres: {
       type: DataTypes.STRING(50),
       allowNull: false,
-      field: "NOM_USUARIO",
+      field: "NOMBRES",
     },
-    ape_usuario: {
+    apellidos: {
       type: DataTypes.STRING(50),
       allowNull: false,
-      field: "APE_USUARIO",
+      field: "APELLIDOS",
     },
 
-    num_tel_usuario: {
+    telefono: {
       type: DataTypes.STRING(10),
       unique: true,
-      field: "NUM_TEL_USUARIO",
-    },
-    fecha_registro: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-      field: "FECHA_REGISTRO",
+      field: "TELEFONO",
     },
     foto_perfil: {
       type: DataTypes.STRING(255),

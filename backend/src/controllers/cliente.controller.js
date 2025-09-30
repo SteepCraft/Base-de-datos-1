@@ -1,8 +1,8 @@
-import { Cliente } from "../models/index.js";
+import models from "../models/index.js";
 
 export async function getAllClientes(req, res) {
   try {
-    const clientes = await Cliente.findAll();
+    const clientes = await models.Cliente.findAll();
     res.json(clientes);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -11,7 +11,7 @@ export async function getAllClientes(req, res) {
 
 export async function getClienteById(req, res) {
   try {
-    const cliente = await Cliente.findByPk(req.params.id);
+    const cliente = await models.Cliente.findByPk(req.params.id);
     if (!cliente)
       return res.status(404).json({ error: "Cliente no encontrado" });
     res.json(cliente);
@@ -35,7 +35,7 @@ export async function createCliente(req, res) {
     }
   }
   try {
-    const cliente = await Cliente.create(req.body);
+    const cliente = await models.Cliente.create(req.body);
     res.status(201).json(cliente);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -52,12 +52,12 @@ export async function updateCliente(req, res) {
     return res.status(400).json({ error: "El parámetro 'id' es obligatorio" });
   }
   try {
-    const [updated] = await Cliente.update(req.body, {
+    const [updated] = await models.Cliente.update(req.body, {
       where: { id_cliente: req.params.id },
     });
     if (!updated)
       return res.status(404).json({ error: "Cliente no encontrado" });
-    const cliente = await Cliente.findByPk(req.params.id);
+    const cliente = await models.Cliente.findByPk(req.params.id);
     res.json(cliente);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -66,7 +66,7 @@ export async function updateCliente(req, res) {
 
 export async function deleteCliente(req, res) {
   try {
-    const deleted = await Cliente.destroy({
+    const deleted = await models.Cliente.destroy({
       where: { id_cliente: req.params.id },
     });
     if (!deleted)
