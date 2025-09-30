@@ -11,21 +11,58 @@ console.log("✅ Configuración completa cargada correctamente");
 const app = express();
 
 /**
- * Inicialización de Sequelize
+ * Inicialización de Sequelize y modelos (idempotente).
+ * - Aplica asociaciones solo si no se han aplicado antes.
+ * - Autentica, hace sync() (opcional) y prueba cada modelo con findOne().
  */
 (async () => {
   try {
-    // Cargar asociaciones
-    applyAssociations(models);
+    // Aplicar asociaciones de forma idempotente:
+    // Si el objeto `models` tiene la marca __associationsApplied evitamos re-aplicar.
+    if (!models.__associationsApplied) {
+      applyAssociations(models);
+      // marcar para evitar re-aplicaciones si este código se ejecuta otra vez
+      Object.defineProperty(models, "__associationsApplied", {
+        value: true,
+        enumerable: false,
+        configurable: false,
+        writable: false,
+      });
+      console.log("🔗 Asociaciones aplicadas a los modelos.");
+    } else {
+      console.log("ℹ️ Asociaciones ya estaban aplicadas, no se re-aplicaron.");
+    }
 
     // Probar conexión
     await sequelize.authenticate();
     console.log("🔗 Conexión con la base de datos establecida correctamente.");
 
-    // Si quieres sincronizar los modelos con la DB
-    // await sequelize.sync({ alter: true });
+    // Sincronizar modelos con la DB (comentar si no quieres que cree/alter tablas)
+    // Nota: en entornos con esquema ya definido en Oracle, evita `sync({ force: true })`
+    await sequelize.sync();
+    console.log("🗄️ sequelize.sync() completado.");
+
+    // Probar accesibilidad de cada modelo (findOne simple)
+    const modelNames = Object.keys(models).filter(
+      k =>
+        typeof models[k] === "function" &&
+        typeof models[k].findOne === "function"
+    );
+
+    for (const name of modelNames) {
+      const model = models[name];
+      try {
+        // Ejecutar una consulta ligera para verificar conectividad y mapping
+        await model.findOne({ raw: true });
+        console.log(`✅ Modelo disponible: ${name}`);
+      } catch (err) {
+        // No detener el arranque por un modelo que falle; mostrar información útil
+        console.warn(`⚠️ Modelo NO accesible: ${name} — ${err.message}`);
+      }
+    }
   } catch (error) {
-    console.error("❌ Error al conectar con la base de datos:", error);
+    console.error("❌ Error al conectar o inicializar modelos:", error);
+    // Si la conexión/initialization falla queremos salir para no correr el servidor en mal estado
     process.exit(1);
   }
 })();
@@ -42,7 +79,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Logger básico
+// Logger básico (puedes reemplazar por winston/pino más adelante)
 app.use((req, res, next) => {
   console.log(`Solicitud entrante: ${req.method} ${req.originalUrl}`, {
     ip: req.ip,
@@ -64,7 +101,7 @@ const apiLimiter = rateLimit({
 app.use(apiLimiter);
 
 /**
- * Rutas básicas
+ * Rutas básicas y CRUD
  */
 app.get("/", (req, res) => {
   res.send("¡API de Ges2l funcionando correctamente!");
@@ -82,9 +119,7 @@ app.get("/admin", (req, res) => {
   res.send("Admin area");
 });
 
-/**
- * Rutas CRUD
- */
+// Rutas CRUD - importa tus routers
 import clienteRoutes from "./src/routes/cliente.routes.js";
 import productoRoutes from "./src/routes/producto.routes.js";
 import proveedorRoutes from "./src/routes/proveedor.routes.js";

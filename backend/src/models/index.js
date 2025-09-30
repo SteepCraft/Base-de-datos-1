@@ -1,4 +1,3 @@
-import { sequelize } from "../config/sequelize.js";
 import * as modelsExports from "./models-export.js";
 import applyAssociations from "./associations.js";
 
@@ -8,6 +7,5 @@ const models = { ...modelsExports };
 // aplicar asociaciones
 applyAssociations(models);
 
-// exportar sequelize y modelos
-export { sequelize };
+// exportar modelos
 export default models;
