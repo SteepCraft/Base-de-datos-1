@@ -11,44 +11,61 @@ export default function applyAssociations(models) {
     Suministros,
   } = models;
 
+  // Helpers para no re-crear la misma asociación varias veces
+  const hasAssoc = (model, alias) =>
+    model &&
+    model.associations &&
+    Object.prototype.hasOwnProperty.call(model.associations, alias);
+
+  const addBelongsTo = (source, target, opts) => {
+    if (!source || !target || !opts?.as) return;
+    if (!hasAssoc(source, opts.as)) source.belongsTo(target, opts);
+  };
+
+  const addHasMany = (source, target, opts) => {
+    if (!source || !target || !opts?.as) return;
+    if (!hasAssoc(source, opts.as)) source.hasMany(target, opts);
+  };
+
+  const addHasOne = (source, target, opts) => {
+    if (!source || !target || !opts?.as) return;
+    if (!hasAssoc(source, opts.as)) source.hasOne(target, opts);
+  };
+
+  const addBelongsToMany = (source, target, opts) => {
+    // for belongsToMany we check the alias on source
+    if (!source || !target || !opts?.as) return;
+    if (!hasAssoc(source, opts.as)) source.belongsToMany(target, opts);
+  };
+
   // -------------------------
   // VENTAS <-> CLIENTE
-  // ventas.id_cliente -> cliente.id
-  // ventas (1) --- (N) detalle_venta
   // -------------------------
   if (Ventas && Cliente) {
-    Ventas.belongsTo(Cliente, {
-      foreignKey: "id_cliente",
-      as: "cliente",
-    });
-    Cliente.hasMany(Ventas, {
-      foreignKey: "id_cliente",
-      as: "ventas",
-    });
+    addBelongsTo(Ventas, Cliente, { foreignKey: "id_cliente", as: "cliente" });
+    addHasMany(Cliente, Ventas, { foreignKey: "id_cliente", as: "ventas" });
   }
 
   // -------------------------
   // DETALLE_VENTA -> VENTAS, PRODUCTO
-  // detalle_venta.venta_codigo -> ventas.codigo
-  // detalle_venta.codigo_producto -> producto.codigo
   // -------------------------
   if (DetalleVenta && Ventas) {
-    DetalleVenta.belongsTo(Ventas, {
+    addBelongsTo(DetalleVenta, Ventas, {
       foreignKey: "venta_codigo",
       as: "venta",
     });
-    Ventas.hasMany(DetalleVenta, {
+    addHasMany(Ventas, DetalleVenta, {
       foreignKey: "venta_codigo",
       as: "detalleVentas",
     });
   }
 
   if (DetalleVenta && Producto) {
-    DetalleVenta.belongsTo(Producto, {
+    addBelongsTo(DetalleVenta, Producto, {
       foreignKey: "codigo_producto",
       as: "producto",
     });
-    Producto.hasMany(DetalleVenta, {
+    addHasMany(Producto, DetalleVenta, {
       foreignKey: "codigo_producto",
       as: "detalleVentas",
     });
@@ -58,11 +75,11 @@ export default function applyAssociations(models) {
   // COMPRAS <-> PROVEEDOR
   // -------------------------
   if (Compras && Proveedor) {
-    Compras.belongsTo(Proveedor, {
+    addBelongsTo(Compras, Proveedor, {
       foreignKey: "id_proveedor",
       as: "proveedor",
     });
-    Proveedor.hasMany(Compras, {
+    addHasMany(Proveedor, Compras, {
       foreignKey: "id_proveedor",
       as: "compras",
     });
@@ -72,22 +89,22 @@ export default function applyAssociations(models) {
   // DETALLE_COMPRAS -> COMPRAS, PRODUCTO
   // -------------------------
   if (DetalleCompras && Compras) {
-    DetalleCompras.belongsTo(Compras, {
+    addBelongsTo(DetalleCompras, Compras, {
       foreignKey: "compra_codigo",
       as: "compra",
     });
-    Compras.hasMany(DetalleCompras, {
+    addHasMany(Compras, DetalleCompras, {
       foreignKey: "compra_codigo",
       as: "detalleCompras",
     });
   }
 
   if (DetalleCompras && Producto) {
-    DetalleCompras.belongsTo(Producto, {
+    addBelongsTo(DetalleCompras, Producto, {
       foreignKey: "codigo_producto",
       as: "producto",
     });
-    Producto.hasMany(DetalleCompras, {
+    addHasMany(Producto, DetalleCompras, {
       foreignKey: "codigo_producto",
       as: "detalleCompras",
     });
@@ -97,42 +114,40 @@ export default function applyAssociations(models) {
   // INVENTARIO -> PRODUCTO (1:1)
   // -------------------------
   if (Inventario && Producto) {
-    Inventario.belongsTo(Producto, {
+    addBelongsTo(Inventario, Producto, {
       foreignKey: "codigo_producto",
       as: "producto",
     });
-    Producto.hasOne(Inventario, {
+    addHasOne(Producto, Inventario, {
       foreignKey: "codigo_producto",
       as: "inventario",
     });
   }
 
   // -------------------------
-  // SUMINISTROS: relación many-to-many (Proveedor <-> Producto)
-  // Usamos la tabla intermedia 'suministros'
+  // SUMINISTROS: Proveedor <-> Producto (m:n) vía suministros
   // -------------------------
   if (Proveedor && Producto && Suministros) {
-    // Proveedor <-> Producto a través de Suministros
-    Proveedor.belongsToMany(Producto, {
+    addBelongsToMany(Proveedor, Producto, {
       through: Suministros,
       foreignKey: "id_proveedor",
       otherKey: "codigo_producto",
       as: "productosSuministrados",
     });
 
-    Producto.belongsToMany(Proveedor, {
+    addBelongsToMany(Producto, Proveedor, {
       through: Suministros,
       foreignKey: "codigo_producto",
       otherKey: "id_proveedor",
       as: "proveedores",
     });
 
-    // Además mapear relaciones directas para acceder al registro de la tabla intermedia
-    Suministros.belongsTo(Proveedor, {
+    // relaciones directas para acceder al registro intermedio
+    addBelongsTo(Suministros, Proveedor, {
       foreignKey: "id_proveedor",
       as: "proveedor",
     });
-    Suministros.belongsTo(Producto, {
+    addBelongsTo(Suministros, Producto, {
       foreignKey: "codigo_producto",
       as: "producto",
     });
