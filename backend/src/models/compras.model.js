@@ -5,7 +5,7 @@ const Compras = sequelize.define(
   "Compras",
   {
     codigo: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
       primaryKey: true,
       allowNull: false,
       field: "CODIGO",

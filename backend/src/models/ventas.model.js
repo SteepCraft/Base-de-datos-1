@@ -5,12 +5,12 @@ const Ventas = sequelize.define(
   "VENTAS",
   {
     codigo: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
       primaryKey: true,
       field: "CODIGO",
     },
     id_cliente: {
-      type: DataTypes.STRING(10),
+      type: DataTypes.BIGINT,
       allowNull: false,
       field: "ID_CLIENTE",
     },

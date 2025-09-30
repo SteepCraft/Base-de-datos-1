@@ -5,23 +5,26 @@ const DetalleVenta = sequelize.define(
   "DETALLE_VENTA",
   {
     venta_codigo: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
       primaryKey: true,
       field: "VENTA_CODIGO",
     },
     codigo_producto: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
       primaryKey: true,
       field: "CODIGO_PRODUCTO",
     },
     cant_venta: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      validate: { min: 1 },
+      defaultValue: 1,
       field: "CANT_VENTA",
     },
     precio_producto: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
+      validate: { min: 0.01 },
       field: "PRECIO_PRODUCTO",
     },
   },

@@ -18,7 +18,7 @@ const Usuario = sequelize.define(
       field: "EMAIL",
     },
     contrasena: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(50),
       allowNull: false,
       field: "CONTRASENA",
     },
@@ -33,7 +33,7 @@ const Usuario = sequelize.define(
       field: "APELLIDOS",
     },
     telefono: {
-      type: DataTypes.STRING(10),
+      type: DataTypes.STRING(15),
       unique: true,
       field: "TELEFONO",
     },

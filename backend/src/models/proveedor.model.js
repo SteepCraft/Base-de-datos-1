@@ -11,6 +11,7 @@ const Proveedor = sequelize.define(
     },
     nombres: {
       type: DataTypes.STRING(50),
+      allowNull: false,
       field: "NOMBRES",
     },
     apellidos: {
@@ -29,7 +30,7 @@ const Proveedor = sequelize.define(
       field: "PROVIDENCIA",
     },
     telefono: {
-      type: DataTypes.STRING(10),
+      type: DataTypes.STRING(15),
       allowNull: false,
       unique: true,
       field: "TELEFONO",

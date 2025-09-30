@@ -6,6 +6,9 @@ import { sequelize } from "./src/config/sequelize.js";
 import models from "./src/models/index.js";
 import applyAssociations from "./src/models/associations.js";
 
+import authRoutes from "./src/auth/auth.routes.js";
+import { authenticate, authorizeAdmin } from "./src/auth/auth.middleware.js";
+
 console.log("✅ Configuración completa cargada correctamente");
 
 const app = express();
@@ -100,24 +103,8 @@ const apiLimiter = rateLimit({
 });
 app.use(apiLimiter);
 
-/**
- * Rutas básicas y CRUD
- */
-app.get("/", (req, res) => {
-  res.send("¡API de Ges2l funcionando correctamente!");
-});
-
-app.post("/login", (req, res) => {
-  res.json({ user: "demo" });
-});
-
-app.post("/logout", (req, res) => {
-  res.json({ message: "Logged out" });
-});
-
-app.get("/admin", (req, res) => {
-  res.send("Admin area");
-});
+/* Montar rutas de autenticación */
+app.use("/auth", authRoutes);
 
 // Rutas CRUD - importa tus routers
 import clienteRoutes from "./src/routes/cliente.routes.js";
@@ -131,15 +118,15 @@ import inventarioRoutes from "./src/routes/inventario.routes.js";
 import suministrosRoutes from "./src/routes/suministros.routes.js";
 import usuarioRoutes from "./src/routes/usuario.routes.js";
 
-app.use("/api/clientes", clienteRoutes);
-app.use("/api/productos", productoRoutes);
-app.use("/api/proveedores", proveedorRoutes);
-app.use("/api/ventas", ventasRoutes);
-app.use("/api/detalle-venta", detalleVentaRoutes);
-app.use("/api/compras", comprasRoutes);
-app.use("/api/detalle-compras", detalleComprasRoutes);
-app.use("/api/inventario", inventarioRoutes);
-app.use("/api/suministros", suministrosRoutes);
-app.use("/api/usuarios", usuarioRoutes);
+app.use("/api/clientes", authenticate, clienteRoutes);
+app.use("/api/productos", authenticate, productoRoutes);
+app.use("/api/proveedores", authenticate, proveedorRoutes);
+app.use("/api/ventas", authenticate, ventasRoutes);
+app.use("/api/detalle-venta", authenticate, detalleVentaRoutes);
+app.use("/api/compras", authenticate, comprasRoutes);
+app.use("/api/detalle-compras", authenticate, detalleComprasRoutes);
+app.use("/api/inventario", authenticate, inventarioRoutes);
+app.use("/api/suministros", authenticate, suministrosRoutes);
+app.use("/api/usuarios", authenticate, authorizeAdmin, usuarioRoutes);
 
 export default app;

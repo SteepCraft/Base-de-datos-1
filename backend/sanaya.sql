@@ -37,7 +37,7 @@ CREATE TABLE cliente (
   nombres   VARCHAR2(50)   NOT NULL,
   apellidos VARCHAR2(50)   NOT NULL,
   direccion VARCHAR2(50),
-  telefono  VARCHAR2(10)
+  telefono  VARCHAR2(15)
 );
 
 ALTER TABLE cliente ADD CONSTRAINT unq_cliente_telefono UNIQUE (telefono);
@@ -57,11 +57,11 @@ ALTER TABLE producto ADD CONSTRAINT chk_producto_precio_pos CHECK (precio > 0);
 -- PROVEEDOR
 CREATE TABLE proveedor (
   id          VARCHAR2(10) PRIMARY KEY,
-  nombres     VARCHAR2(50),
-  apellidos   VARCHAR2(50),
+  nombres     VARCHAR2(50) NOT NULL,
+  apellidos   VARCHAR2(50) NOT NULL,
   direccion   VARCHAR2(50),
   providencia VARCHAR2(50),
-  telefono    VARCHAR2(10)
+  telefono    VARCHAR2(15)
 );
 
 ALTER TABLE proveedor ADD CONSTRAINT unq_proveedor_telefono UNIQUE (telefono);
@@ -103,13 +103,13 @@ ALTER TABLE compras ADD CONSTRAINT chk_compras_tot_pos CHECK (tot_compras > 0);
 
 -- DETALLE_COMPRAS
 CREATE TABLE detalle_compras (
-  compra_codigo   NUMBER,             -- FK -> compras.codigo
+  codigo_compra   NUMBER,             -- FK -> compras.codigo
   codigo_producto NUMBER,             -- FK -> producto.codigo
   cant_compras    NUMBER DEFAULT 1,
   precio_unit     NUMBER(10,2) NOT NULL
 );
 
-ALTER TABLE detalle_compras ADD CONSTRAINT pk_detalle_compras PRIMARY KEY (compra_codigo, codigo_producto);
+ALTER TABLE detalle_compras ADD CONSTRAINT pk_detalle_compras PRIMARY KEY (codigo_compra, codigo_producto);
 ALTER TABLE detalle_compras ADD CONSTRAINT chk_detalle_compras_precio_unit_pos CHECK (precio_unit > 0);
 
 
@@ -142,14 +142,13 @@ CREATE TABLE usuario (
   contrasena  VARCHAR2(50) NOT NULL,
   nombres     VARCHAR2(50) NOT NULL,
   apellidos   VARCHAR2(50) NOT NULL,
-  telefono    VARCHAR2(10),
+  telefono    VARCHAR2(15),
   foto_perfil VARCHAR2(255),
-  estado      VARCHAR2(20) DEFAULT 'ACTIVO'
+  estado      BOOLEAN DEFAULT 'TRUE'  -- TRUE=ACTIVO, FALSE=INACTIVO
 );
 
 ALTER TABLE usuario ADD CONSTRAINT unq_usuario_email UNIQUE (email);
 ALTER TABLE usuario ADD CONSTRAINT unq_usuario_telefono UNIQUE (telefono);
-ALTER TABLE usuario ADD CONSTRAINT chk_usuario_estado CHECK (estado IN ('ACTIVO','INACTIVO','SUSPENDIDO'));
 
 -- ---------------------------
 -- 3) RE-AÑADIR CLAVES FORÁNEAS (FKs)
@@ -167,7 +166,7 @@ ALTER TABLE detalle_venta ADD CONSTRAINT fk_detventa_producto FOREIGN KEY (codig
 ALTER TABLE compras ADD CONSTRAINT fk_compras_proveedor FOREIGN KEY (id_proveedor)
   REFERENCES proveedor(id);
 
-ALTER TABLE detalle_compras ADD CONSTRAINT fk_detcompra_compras FOREIGN KEY (compra_codigo)
+ALTER TABLE detalle_compras ADD CONSTRAINT fk_detcompra_compras FOREIGN KEY (codigo_compra)
   REFERENCES compras(codigo);
 
 ALTER TABLE detalle_compras ADD CONSTRAINT fk_detcompra_producto FOREIGN KEY (codigo_producto)

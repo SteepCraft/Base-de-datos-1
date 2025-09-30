@@ -5,7 +5,7 @@ const Producto = sequelize.define(
   "PRODUCTO",
   {
     codigo: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
       primaryKey: true,
       field: "CODIGO",
     },
@@ -15,7 +15,7 @@ const Producto = sequelize.define(
       field: "DESCRIPCION",
     },
     precio: {
-      type: DataTypes.DECIMAL(12, 2),
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
       validate: { min: 0.01 },
       field: "PRECIO",

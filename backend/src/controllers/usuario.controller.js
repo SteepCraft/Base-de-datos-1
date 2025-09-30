@@ -26,12 +26,7 @@ export async function createUsuario(req, res) {
       error: "El cuerpo de la solicitud debe ser un objeto JSON válido",
     });
   }
-  const requiredFields = [
-    "id_usuario",
-    "nom_usuario",
-    "ape_usuario",
-    "email_usuario",
-  ];
+  const requiredFields = ["nombres", "apellidos", "email", "contrasena"];
   for (const field of requiredFields) {
     if (!req.body[field]) {
       return res
@@ -58,7 +53,7 @@ export async function updateUsuario(req, res) {
   }
   try {
     const [updated] = await models.Usuario.update(req.body, {
-      where: { id_usuario: req.params.id },
+      where: { id: req.params.id },
     });
     if (!updated)
       return res.status(404).json({ error: "Usuario no encontrado" });
@@ -72,7 +67,7 @@ export async function updateUsuario(req, res) {
 export async function deleteUsuario(req, res) {
   try {
     const deleted = await models.Usuario.destroy({
-      where: { id_usuario: req.params.id },
+      where: { id: req.params.id },
     });
     if (!deleted)
       return res.status(404).json({ error: "Usuario no encontrado" });

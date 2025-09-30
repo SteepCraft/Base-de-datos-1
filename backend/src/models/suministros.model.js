@@ -10,7 +10,7 @@ const Suministros = sequelize.define(
       field: "ID_PROVEEDOR",
     },
     codigo_producto: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
       primaryKey: true,
       field: "CODIGO_PRODUCTO",
     },

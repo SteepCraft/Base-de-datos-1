@@ -90,11 +90,11 @@ export default function applyAssociations(models) {
   // -------------------------
   if (DetalleCompras && Compras) {
     addBelongsTo(DetalleCompras, Compras, {
-      foreignKey: "compra_codigo",
+      foreignKey: "codigo_compra",
       as: "compra",
     });
     addHasMany(Compras, DetalleCompras, {
-      foreignKey: "compra_codigo",
+      foreignKey: "codigo_compra",
       as: "detalleCompras",
     });
   }

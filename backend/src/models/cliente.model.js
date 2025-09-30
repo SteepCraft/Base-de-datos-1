@@ -5,7 +5,7 @@ const Cliente = sequelize.define(
   "Cliente",
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
       autoIncrement: true,
       primaryKey: true,
       allowNull: false,
@@ -26,7 +26,7 @@ const Cliente = sequelize.define(
       field: "DIRECCION",
     },
     telefono: {
-      type: DataTypes.STRING(20),
+      type: DataTypes.STRING(15),
       allowNull: true,
       unique: true,
       field: "TELEFONO",
