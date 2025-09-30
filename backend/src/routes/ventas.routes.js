@@ -1,14 +1,10 @@
 import { Router } from "express";
-import {
-  getAllVentas,
-  getVentaById,
-  createVenta,
-} from "../controllers/ventas.controller.js";
+import VentasController from "../controllers/ventas.controller.js";
 
 const router = Router();
 
-router.get("/", getAllVentas);
-router.get("/:id", getVentaById);
-router.post("/", createVenta);
+router.get("/", VentasController.getAllVentas);
+router.get("/:id", VentasController.getVentaById);
+router.post("/", VentasController.createVenta);
 
 export default router;

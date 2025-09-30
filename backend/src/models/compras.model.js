@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../config/sequelize.js";
 
 const Compras = sequelize.define(
-  "Compras",
+  "COMPRAS",
   {
     codigo: {
       type: DataTypes.BIGINT,

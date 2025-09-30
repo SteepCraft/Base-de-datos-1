@@ -1,8 +1,8 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/sequelize.js";
 
-const DetalleCompras = sequelize.define(
-  "DETALLE_COMPRAS",
+const DetalleCompra = sequelize.define(
+  "DETALLE_COMPRA",
   {
     codigo_compra: {
       type: DataTypes.BIGINT,
@@ -27,9 +27,9 @@ const DetalleCompras = sequelize.define(
     },
   },
   {
-    tableName: "DETALLE_COMPRAS",
+    tableName: "DETALLE_COMPRA",
     timestamps: false,
   }
 );
 
-export default DetalleCompras;
+export default DetalleCompra;

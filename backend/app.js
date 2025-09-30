@@ -1,6 +1,7 @@
 import { randomBytes } from "crypto";
 import express from "express";
 import { rateLimit } from "express-rate-limit";
+import cookieParser from "cookie-parser";
 
 import { sequelize } from "./src/config/sequelize.js";
 import models from "./src/models/index.js";
@@ -103,8 +104,9 @@ const apiLimiter = rateLimit({
 });
 app.use(apiLimiter);
 
+app.use(cookieParser());
 /* Montar rutas de autenticación */
-app.use("/auth", authRoutes);
+app.use("/api/auth", authRoutes);
 
 // Rutas CRUD - importa tus routers
 import clienteRoutes from "./src/routes/cliente.routes.js";
@@ -113,20 +115,20 @@ import proveedorRoutes from "./src/routes/proveedor.routes.js";
 import ventasRoutes from "./src/routes/ventas.routes.js";
 import detalleVentaRoutes from "./src/routes/detalle_venta.routes.js";
 import comprasRoutes from "./src/routes/compras.routes.js";
-import detalleComprasRoutes from "./src/routes/detalle_compras.routes.js";
+import detalleCompraRoutes from "./src/routes/detalle_compra.routes.js";
 import inventarioRoutes from "./src/routes/inventario.routes.js";
 import suministrosRoutes from "./src/routes/suministros.routes.js";
 import usuarioRoutes from "./src/routes/usuario.routes.js";
 
-app.use("/api/clientes", authenticate, clienteRoutes);
-app.use("/api/productos", authenticate, productoRoutes);
-app.use("/api/proveedores", authenticate, proveedorRoutes);
-app.use("/api/ventas", authenticate, ventasRoutes);
+app.use("/api/cliente", authenticate, clienteRoutes);
+app.use("/api/producto", authenticate, productoRoutes);
+app.use("/api/proveedor", authenticate, proveedorRoutes);
+app.use("/api/venta", authenticate, ventasRoutes);
 app.use("/api/detalle-venta", authenticate, detalleVentaRoutes);
 app.use("/api/compras", authenticate, comprasRoutes);
-app.use("/api/detalle-compras", authenticate, detalleComprasRoutes);
+app.use("/api/detalle-compra", authenticate, detalleCompraRoutes);
 app.use("/api/inventario", authenticate, inventarioRoutes);
-app.use("/api/suministros", authenticate, suministrosRoutes);
-app.use("/api/usuarios", authenticate, authorizeAdmin, usuarioRoutes);
+app.use("/api/suministro", authenticate, suministrosRoutes);
+app.use("/api/usuario", authenticate, authorizeAdmin, usuarioRoutes);
 
 export default app;

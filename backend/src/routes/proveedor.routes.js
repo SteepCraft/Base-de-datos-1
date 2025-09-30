@@ -1,18 +1,12 @@
 import { Router } from "express";
-import {
-  getAllProveedores,
-  getProveedorById,
-  createProveedor,
-  updateProveedor,
-  deleteProveedor,
-} from "../controllers/proveedor.controller.js";
+import ProveedorController from "../controllers/proveedor.controller.js";
 
 const router = Router();
 
-router.get("/", getAllProveedores);
-router.get("/:id", getProveedorById);
-router.post("/", createProveedor);
-router.put("/:id", updateProveedor);
-router.delete("/:id", deleteProveedor);
+router.get("/", ProveedorController.getAllProveedores);
+router.get("/:id", ProveedorController.getProveedorById);
+router.post("/", ProveedorController.createProveedor);
+router.put("/:id", ProveedorController.updateProveedor);
+router.delete("/:id", ProveedorController.deleteProveedor);
 
 export default router;

@@ -32,6 +32,7 @@ const Inventario = sequelize.define(
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
+      field: "FECHA_REGIS",
     },
   },
   {

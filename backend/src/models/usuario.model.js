@@ -18,7 +18,7 @@ const Usuario = sequelize.define(
       field: "EMAIL",
     },
     contrasena: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.STRING(255),
       allowNull: false,
       field: "CONTRASENA",
     },
@@ -42,11 +42,8 @@ const Usuario = sequelize.define(
       field: "FOTO_PERFIL",
     },
     estado: {
-      type: DataTypes.STRING(20),
-      defaultValue: "ACTIVO",
-      validate: {
-        isIn: [["ACTIVO", "INACTIVO", "SUSPENDIDO"]],
-      },
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
       field: "ESTADO",
     },
   },

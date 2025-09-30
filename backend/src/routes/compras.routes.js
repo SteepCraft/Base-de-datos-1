@@ -1,18 +1,12 @@
 import { Router } from "express";
-import {
-  getAllCompras,
-  getCompraById,
-  createCompra,
-  updateCompra,
-  deleteCompra,
-} from "../controllers/compras.controller.js";
+import CompraController from "../controllers/compras.controller.js";
 
 const router = Router();
 
-router.get("/", getAllCompras);
-router.get("/:id", getCompraById);
-router.post("/", createCompra);
-router.put("/:id", updateCompra);
-router.delete("/:id", deleteCompra);
+router.get("/", CompraController.getAllCompra);
+router.get("/:id", CompraController.getCompraById);
+router.post("/", CompraController.createCompra);
+router.put("/:id", CompraController.updateCompra);
+router.delete("/:id", CompraController.deleteCompra);
 
 export default router;
