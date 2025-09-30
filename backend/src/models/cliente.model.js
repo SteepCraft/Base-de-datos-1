@@ -4,30 +4,31 @@ import { sequelize } from "../config/sequelize.js";
 const Cliente = sequelize.define(
   "CLIENTE",
   {
-    id_cliente: {
-      type: DataTypes.STRING(10),
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
       primaryKey: true,
       allowNull: false,
-      field: "ID_CLIENTE",
+      field: "ID",
     },
-    nom_cliente: {
+    nombres: {
       type: DataTypes.STRING(50),
       allowNull: false,
-      field: "NOM_CLIENTE",
+      field: "NOMBRES",
     },
-    ape_cliente: {
+    apellidos: {
       type: DataTypes.STRING(50),
       allowNull: false,
-      field: "APE_CLIENTE",
+      field: "APELLIDOS",
     },
-    dire_cliente: {
+    direccion: {
       type: DataTypes.STRING(50),
-      field: "DIRE_CLIENTE",
+      field: "DIRECCION",
     },
-    num_tel_cliente: {
+    telefono: {
       type: DataTypes.STRING(10),
       unique: true,
-      field: "NUM_TEL_CLIENTE",
+      field: "TELEFONO",
     },
   },
   {

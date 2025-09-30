@@ -4,10 +4,10 @@ import { sequelize } from "../config/sequelize.js";
 const Compras = sequelize.define(
   "COMPRAS",
   {
-    codi_compra: {
+    codigo: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      field: "CODI_COMPRA",
+      field: "CODIGO",
     },
     fecha_compra: {
       type: DataTypes.DATE,

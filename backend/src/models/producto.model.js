@@ -4,21 +4,21 @@ import { sequelize } from "../config/sequelize.js";
 const Producto = sequelize.define(
   "PRODUCTO",
   {
-    codi_producto: {
+    codigo: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      field: "CODI_PRODUCTO",
+      field: "CODIGO",
     },
-    descrip_producto: {
+    descripcion: {
       type: DataTypes.STRING(100),
       allowNull: false,
-      field: "DESCRIP_PRODUCTO",
+      field: "DESCRIPCION",
     },
-    precio_producto: {
+    precio: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
       validate: { min: 0.01 },
-      field: "PRECIO_PRODUCTO",
+      field: "PRECIO",
     },
     num_existencia: {
       type: DataTypes.INTEGER,

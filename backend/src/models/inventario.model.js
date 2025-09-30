@@ -4,10 +4,10 @@ import { sequelize } from "../config/sequelize.js";
 const Inventario = sequelize.define(
   "INVENTARIO",
   {
-    codi_producto: {
+    codigo_producto: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      field: "CODI_PRODUCTO",
+      field: "CODIGO_PRODUCTO",
     },
     stock_actual: {
       type: DataTypes.INTEGER,

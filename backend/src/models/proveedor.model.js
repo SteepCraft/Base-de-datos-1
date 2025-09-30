@@ -4,35 +4,35 @@ import { sequelize } from "../config/sequelize.js";
 const Proveedor = sequelize.define(
   "PROVEEDOR",
   {
-    id_proveedor: {
+    id: {
       type: DataTypes.STRING(10),
       primaryKey: true,
-      field: "ID_PROVEEDOR",
+      field: "ID",
     },
-    nom_proveedor: {
+    nombres: {
       type: DataTypes.STRING(50),
-      field: "NOM_PROVEEDOR",
+      field: "NOMBRES",
     },
-    ape_proveedor: {
-      type: DataTypes.STRING(50),
-      allowNull: false,
-      field: "APE_PROVEEDOR",
-    },
-    dire_proveedor: {
+    apellidos: {
       type: DataTypes.STRING(50),
       allowNull: false,
-      field: "DIRE_PROVEEDOR",
+      field: "APELLIDOS",
     },
-    provi_proveedor: {
+    direccion: {
       type: DataTypes.STRING(50),
       allowNull: false,
-      field: "PROVI_PROVEEDOR",
+      field: "DIRECCION",
     },
-    num_tel_proveedor: {
+    providencia: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+      field: "PROVIDENCIA",
+    },
+    telefono: {
       type: DataTypes.STRING(10),
       allowNull: false,
       unique: true,
-      field: "NUM_TEL_PROVEEDOR",
+      field: "TELEFONO",
     },
   },
   {
