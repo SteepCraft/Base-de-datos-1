@@ -6,15 +6,8 @@ const Cliente = sequelize.define(
   {
     id: {
       type: DataTypes.INTEGER,
-<<<<<<< HEAD
-<<<<<<< HEAD
       autoIncrement: true,
-=======
->>>>>>> 1842c09 (Actualizaciones en sql, controllers y modelos de sequelize)
-=======
->>>>>>> origin/master
       primaryKey: true,
-      autoIncrement: true,
       allowNull: false,
       field: "ID",
     },
@@ -29,31 +22,12 @@ const Cliente = sequelize.define(
       field: "APELLIDOS",
     },
     direccion: {
-<<<<<<< HEAD
-<<<<<<< HEAD
       type: DataTypes.STRING(50),
       field: "DIRECCION",
     },
     telefono: {
-      type: DataTypes.STRING(10),
-=======
-      type: DataTypes.STRING(100),
-      allowNull: true,
-      field: "DIRECCION",
-    },
-    telefono: {
       type: DataTypes.STRING(20),
       allowNull: true,
->>>>>>> 1842c09 (Actualizaciones en sql, controllers y modelos de sequelize)
-=======
-      type: DataTypes.STRING(100),
-      allowNull: true,
-      field: "DIRECCION",
-    },
-    telefono: {
-      type: DataTypes.STRING(20),
-      allowNull: true,
->>>>>>> origin/master
       unique: true,
       field: "TELEFONO",
     },

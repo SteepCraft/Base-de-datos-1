@@ -10,28 +10,12 @@ const Producto = sequelize.define(
       field: "CODIGO",
     },
     descripcion: {
-<<<<<<< HEAD
-<<<<<<< HEAD
       type: DataTypes.STRING(100),
-=======
-      type: DataTypes.STRING(200),
->>>>>>> 1842c09 (Actualizaciones en sql, controllers y modelos de sequelize)
-=======
-      type: DataTypes.STRING(200),
->>>>>>> origin/master
       allowNull: false,
       field: "DESCRIPCION",
     },
     precio: {
-<<<<<<< HEAD
-<<<<<<< HEAD
-      type: DataTypes.DECIMAL(10, 2),
-=======
       type: DataTypes.DECIMAL(12, 2),
->>>>>>> 1842c09 (Actualizaciones en sql, controllers y modelos de sequelize)
-=======
-      type: DataTypes.DECIMAL(12, 2),
->>>>>>> origin/master
       allowNull: false,
       validate: { min: 0.01 },
       field: "PRECIO",

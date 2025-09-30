@@ -7,14 +7,7 @@ const Compras = sequelize.define(
     codigo: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
       allowNull: false,
->>>>>>> 1842c09 (Actualizaciones en sql, controllers y modelos de sequelize)
-=======
-      allowNull: false,
->>>>>>> origin/master
       field: "CODIGO",
     },
 
