@@ -1,13 +1,51 @@
 import models from "../models/index.js";
 
+const ALLOWED_FIELDS = [
+  "email",
+  "contrasena",
+  "nombres",
+  "apellidos",
+  "telefono",
+  "foto_perfil",
+  "estado",
+];
+
+// convierte valores entrantes a 1/0 (DB)
+function parseEstadoToDb(value) {
+  if (value === undefined || value === null) return undefined;
+  if (typeof value === "boolean") return value ? 1 : 0;
+  if (typeof value === "number") return value ? 1 : 0;
+  const v = String(value).toLowerCase().trim();
+  if (["1", "true", "y", "yes", "activo", "active"].includes(v)) return 1;
+  return 0;
+}
+
+// convierte 1/0 (DB) a booleano para la API
+function formatEstadoFromDb(value) {
+  if (value === undefined || value === null) return null;
+  if (typeof value === "number") return value === 1;
+  const v = String(value).trim();
+  return v === "1" || v.toLowerCase() === "y" || v.toLowerCase() === "true";
+}
+
+// limpia un objeto usuario (instancia o plain) -> quita contrasena y normaliza estado
+function sanitizeUsuario(obj) {
+  if (!obj) return obj;
+  const plain = typeof obj.toJSON === "function" ? obj.toJSON() : { ...obj };
+  if ("contrasena" in plain) delete plain.contrasena;
+  if ("estado" in plain) plain.estado = formatEstadoFromDb(plain.estado);
+  return plain;
+}
+
 class UsuarioController {
   static async getAllUsuarios(req, res) {
     try {
       const usuarios = await models.Usuario.findAll();
-      const { password: _, ...usuariosSafe } = usuarios.map(u => u.toJSON());
-      res.json(usuariosSafe);
+      // usuarios es un array de instancias -> convertir y sanear cada uno
+      const usuariosSafe = usuarios.map(u => sanitizeUsuario(u));
+      return res.json(usuariosSafe);
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      return res.status(500).json({ error: error.message });
     }
   }
 
@@ -47,12 +85,10 @@ class UsuarioController {
         }
       }
 
-      // 4) Fallback: intentar por cada atributo del modelo (útil si el 'field' real es diferente)
+      // 4) Fallback: intentar por cada atributo del modelo
       if (!usuario) {
         const attrs = Object.keys(Usuario.getAttributes || {});
         for (const attr of attrs) {
-          // omitimos búsquedas masivas en atributos tipo texto por performance,
-          // pero intentamos por igualdad con el value 1 o '1'.
           try {
             const where = {};
             where[attr] = numId || rawId;
@@ -78,7 +114,16 @@ class UsuarioController {
         });
       }
 
-      const { password: _, ...usuarioSafe } = usuario;
+      // usuario es plain object por raw: true -> sanear manualmente
+      const usuarioSafe = {
+        ...usuario,
+        // eliminar contrasena si existe bajo ese nombre
+        ...(usuario.contrasena ? {} : {}),
+      };
+      if ("contrasena" in usuarioSafe) delete usuarioSafe.contrasena;
+      if ("estado" in usuarioSafe)
+        usuarioSafe.estado = formatEstadoFromDb(usuario.estado);
+
       return res.json(usuarioSafe);
     } catch (error) {
       return res.status(500).json({ error: error.message });
@@ -100,11 +145,23 @@ class UsuarioController {
       }
     }
     try {
-      const usuario = await models.Usuario.create(req.body);
-      const { password: _, ...usuarioSafe } = usuario.toJSON();
-      res.status(201).json(usuarioSafe);
+      // construir payload seguro sólo con campos permitidos
+      const payload = {};
+      for (const k of ALLOWED_FIELDS) {
+        if (k in req.body) payload[k] = req.body[k];
+      }
+      // normalizar estado a 1/0 si viene
+      if ("estado" in payload) {
+        const p = parseEstadoToDb(payload.estado);
+        if (p !== undefined) payload.estado = p;
+        else delete payload.estado;
+      }
+
+      const usuario = await models.Usuario.create(payload);
+      const usuarioSafe = sanitizeUsuario(usuario);
+      return res.status(201).json(usuarioSafe);
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      return res.status(400).json({ error: error.message });
     }
   }
 
@@ -120,16 +177,28 @@ class UsuarioController {
         .json({ error: "El parámetro 'id' es obligatorio" });
     }
     try {
-      const [updated] = await models.Usuario.update(req.body, {
+      // construir payload seguro
+      const payload = {};
+      for (const k of ALLOWED_FIELDS) {
+        if (k in req.body) payload[k] = req.body[k];
+      }
+      if ("estado" in payload) {
+        const p = parseEstadoToDb(payload.estado);
+        if (p !== undefined) payload.estado = p;
+        else delete payload.estado;
+      }
+
+      const [updated] = await models.Usuario.update(payload, {
         where: { id: req.params.id },
       });
       if (!updated)
         return res.status(404).json({ error: "Usuario no encontrado" });
+
       const usuario = await models.Usuario.findByPk(req.params.id);
-      const { password: _, ...usuarioSafe } = usuario.toJSON();
-      res.json(usuarioSafe);
+      const usuarioSafe = sanitizeUsuario(usuario);
+      return res.json(usuarioSafe);
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      return res.status(400).json({ error: error.message });
     }
   }
 
@@ -140,9 +209,9 @@ class UsuarioController {
       });
       if (!deleted)
         return res.status(404).json({ error: "Usuario no encontrado" });
-      res.json({ message: "Usuario eliminado" });
+      return res.json({ message: "Usuario eliminado" });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      return res.status(500).json({ error: error.message });
     }
   }
 }

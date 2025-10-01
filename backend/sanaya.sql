@@ -144,7 +144,7 @@ CREATE TABLE usuario (
   apellidos   VARCHAR2(50) NOT NULL,
   telefono    VARCHAR2(15),
   foto_perfil VARCHAR2(255),
-  estado      BOOLEAN DEFAULT 'TRUE'  -- TRUE=ACTIVO, FALSE=INACTIVO
+  estado      NUMBER(1) DEFAULT 1 CHECK (estado IN (0, 1)) -- 0: inactivo, 1: activo
 );
 
 ALTER TABLE usuario ADD CONSTRAINT unq_usuario_email UNIQUE (email);

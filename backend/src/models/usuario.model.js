@@ -42,9 +42,16 @@ const Usuario = sequelize.define(
       field: "FOTO_PERFIL",
     },
     estado: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true,
+      type: DataTypes.INTEGER,
+      defaultValue: 1,
       field: "ESTADO",
+      get() {
+        const rawValue = this.getDataValue("estado");
+        return rawValue === 1; // lo expones como true/false
+      },
+      set(value) {
+        this.setDataValue("estado", value ? 1 : 0);
+      },
     },
   },
   {
