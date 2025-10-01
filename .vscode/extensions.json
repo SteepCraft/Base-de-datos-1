@@ -10,6 +10,22 @@
     "typescript-eslint.typescript-eslint",
     "github.vscode-pull-request-github",
     "pkief.material-icon-theme",
-    "mhutchie.git-graph"
+    "mhutchie.git-graph",
+    "mikestead.dotenv",
+    "usernamehw.errorlens",
+    "miguelsolorio.fluent-icons",
+    "github.remotehub",
+    "zhuangtongfa.material-theme",
+    "miguelsolorio.symbols",
+    "clinyong.vscode-css-modules",
+    "github.vscode-github-actions",
+    "heybourn.headwind",
+    "wix.vscode-import-cost",
+    "yzhang.markdown-all-in-one",
+    "postman.postman-for-vscode",
+    "ms-ossdata.vscode-pgsql",
+    "vitest.explorer",
+    "streetsidesoftware.code-spell-checker",
+    "streetsidesoftware.code-spell-checker-spanish"
   ]
 }
