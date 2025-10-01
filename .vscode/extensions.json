@@ -24,8 +24,6 @@
     "yzhang.markdown-all-in-one",
     "postman.postman-for-vscode",
     "ms-ossdata.vscode-pgsql",
-    "vitest.explorer",
-    "streetsidesoftware.code-spell-checker",
-    "streetsidesoftware.code-spell-checker-spanish"
+    "vitest.explorer"
   ]
 }
