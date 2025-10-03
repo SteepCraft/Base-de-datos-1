@@ -33,7 +33,7 @@ class ProveedorController {
   static async updateProveedor(req, res) {
     try {
       const [updated] = await models.Proveedor.update(req.body, {
-        where: { id_proveedor: req.params.id },
+        where: { id: req.params.id },
       });
       if (!updated)
         return res.status(404).json({ error: "Proveedor no encontrado" });
@@ -47,7 +47,7 @@ class ProveedorController {
   static async deleteProveedor(req, res) {
     try {
       const deleted = await models.Proveedor.destroy({
-        where: { id_proveedor: req.params.id },
+        where: { id: req.params.id },
       });
       if (!deleted)
         return res.status(404).json({ error: "Proveedor no encontrado" });

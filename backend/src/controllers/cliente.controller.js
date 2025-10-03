@@ -27,7 +27,7 @@ class ClienteController {
         error: "El cuerpo de la solicitud debe ser un objeto JSON válido",
       });
     }
-    const requiredFields = ["id_cliente", "nom_cliente", "ape_cliente"];
+    const requiredFields = ["nombres", "apellidos"];
     for (const field of requiredFields) {
       if (!req.body[field]) {
         return res
@@ -56,7 +56,7 @@ class ClienteController {
     }
     try {
       const [updated] = await models.Cliente.update(req.body, {
-        where: { id_cliente: req.params.id },
+        where: { id: req.params.id },
       });
       if (!updated)
         return res.status(404).json({ error: "Cliente no encontrado" });
@@ -70,7 +70,7 @@ class ClienteController {
   static async deleteCliente(req, res) {
     try {
       const deleted = await models.Cliente.destroy({
-        where: { id_cliente: req.params.id },
+        where: { id: req.params.id },
       });
       if (!deleted)
         return res.status(404).json({ error: "Cliente no encontrado" });

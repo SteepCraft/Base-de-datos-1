@@ -33,7 +33,7 @@ class ProductoController {
   static async updateProducto(req, res) {
     try {
       const [updated] = await models.Producto.update(req.body, {
-        where: { codi_producto: req.params.id },
+        where: { codigo: req.params.id },
       });
       if (!updated)
         return res.status(404).json({ error: "Producto no encontrado" });
@@ -47,7 +47,7 @@ class ProductoController {
   static async deleteProducto(req, res) {
     try {
       const deleted = await models.Producto.destroy({
-        where: { codi_producto: req.params.id },
+        where: { codigo: req.params.id },
       });
       if (!deleted)
         return res.status(404).json({ error: "Producto no encontrado" });
