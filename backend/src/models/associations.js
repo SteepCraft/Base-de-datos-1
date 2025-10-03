@@ -5,8 +5,8 @@ export default function applyAssociations(models) {
     Proveedor,
     Ventas,
     DetalleVenta,
-    Compras,
-    DetalleCompras,
+    Compra,
+    DetalleCompra,
     Inventario,
     Suministros,
   } = models;
@@ -74,12 +74,12 @@ export default function applyAssociations(models) {
   // -------------------------
   // COMPRAS <-> PROVEEDOR
   // -------------------------
-  if (Compras && Proveedor) {
-    addBelongsTo(Compras, Proveedor, {
+  if (Compra && Proveedor) {
+    addBelongsTo(Compra, Proveedor, {
       foreignKey: "id_proveedor",
       as: "proveedor",
     });
-    addHasMany(Proveedor, Compras, {
+    addHasMany(Proveedor, Compra, {
       foreignKey: "id_proveedor",
       as: "compras",
     });
@@ -88,23 +88,23 @@ export default function applyAssociations(models) {
   // -------------------------
   // DETALLE_COMPRAS -> COMPRAS, PRODUCTO
   // -------------------------
-  if (DetalleCompras && Compras) {
-    addBelongsTo(DetalleCompras, Compras, {
+  if (DetalleCompra && Compra) {
+    addBelongsTo(DetalleCompra, Compra, {
       foreignKey: "codigo_compra",
       as: "compra",
     });
-    addHasMany(Compras, DetalleCompras, {
+    addHasMany(Compra, DetalleCompra, {
       foreignKey: "codigo_compra",
       as: "detalleCompras",
     });
   }
 
-  if (DetalleCompras && Producto) {
-    addBelongsTo(DetalleCompras, Producto, {
+  if (DetalleCompra && Producto) {
+    addBelongsTo(DetalleCompra, Producto, {
       foreignKey: "codigo_producto",
       as: "producto",
     });
-    addHasMany(Producto, DetalleCompras, {
+    addHasMany(Producto, DetalleCompra, {
       foreignKey: "codigo_producto",
       as: "detalleCompras",
     });

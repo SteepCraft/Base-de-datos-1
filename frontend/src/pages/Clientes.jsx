@@ -4,7 +4,6 @@ import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiX } from "react-icons/fi";
 
 import api from "../config/api";
 
-
 const Clientes = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCliente, setEditingCliente] = useState(null);
@@ -39,7 +38,7 @@ const Clientes = () => {
   };
 
   const createMutation = useMutation({
-    mutationFn: async data => {
+    mutationFn: async (data) => {
       const response = await api.post("/cliente", data);
       return response.data;
     },
@@ -61,7 +60,7 @@ const Clientes = () => {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: async id => {
+    mutationFn: async (id) => {
       await api.delete(`/cliente/${id}`);
     },
     onSuccess: () => {
@@ -90,7 +89,7 @@ const Clientes = () => {
     setIsModalOpen(true);
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (editingCliente) {
       updateMutation.mutate({ id: editingCliente.id, data: formData });
@@ -99,13 +98,13 @@ const Clientes = () => {
     }
   };
 
-  const handleDelete = id => {
+  const handleDelete = (id) => {
     if (window.confirm("¿Está seguro de eliminar este cliente?")) {
       deleteMutation.mutate(id);
     }
   };
 
-  const filteredClientes = clientes?.filter(cliente =>
+  const filteredClientes = clientes?.filter((cliente) =>
     `${cliente.nombres} ${cliente.apellidos}`
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
@@ -131,7 +130,7 @@ const Clientes = () => {
             type='text'
             placeholder='Buscar clientes...'
             value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className='block w-full py-2 pl-10 pr-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
           />
         </div>
@@ -190,7 +189,7 @@ const Clientes = () => {
                   </td>
                 </tr>
               ) : (
-                filteredClientes?.map(cliente => (
+                filteredClientes?.map((cliente) => (
                   <tr key={cliente.id} className='hover:bg-gray-50'>
                     <td className='px-6 py-4 text-sm text-gray-900 whitespace-nowrap'>
                       {cliente.id}
@@ -237,9 +236,14 @@ const Clientes = () => {
               className='fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75'
               onClick={closeModal}
               aria-hidden='true'
-             />
+            />
 
-            <span className='hidden sm:inline-block sm:align-middle sm:h-screen' aria-hidden='true'>&#8203;</span>
+            <span
+              className='hidden sm:inline-block sm:align-middle sm:h-screen'
+              aria-hidden='true'
+            >
+              &#8203;
+            </span>
 
             <div className='inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full relative z-10'>
               <form onSubmit={handleSubmit}>
@@ -266,7 +270,7 @@ const Clientes = () => {
                         type='text'
                         required
                         value={formData.nombres}
-                        onChange={e =>
+                        onChange={(e) =>
                           setFormData({ ...formData, nombres: e.target.value })
                         }
                         className='block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
@@ -281,7 +285,7 @@ const Clientes = () => {
                         type='text'
                         required
                         value={formData.apellidos}
-                        onChange={e =>
+                        onChange={(e) =>
                           setFormData({
                             ...formData,
                             apellidos: e.target.value,
@@ -298,7 +302,7 @@ const Clientes = () => {
                       <input
                         type='text'
                         value={formData.direccion}
-                        onChange={e =>
+                        onChange={(e) =>
                           setFormData({
                             ...formData,
                             direccion: e.target.value,
@@ -315,7 +319,7 @@ const Clientes = () => {
                       <input
                         type='tel'
                         value={formData.telefono}
-                        onChange={e =>
+                        onChange={(e) =>
                           setFormData({ ...formData, telefono: e.target.value })
                         }
                         className='block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'

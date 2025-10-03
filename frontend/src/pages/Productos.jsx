@@ -4,7 +4,6 @@ import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiX } from "react-icons/fi";
 
 import api from "../config/api";
 
-
 const Productos = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProducto, setEditingProducto] = useState(null);
@@ -39,7 +38,7 @@ const Productos = () => {
   };
 
   const createMutation = useMutation({
-    mutationFn: async data => {
+    mutationFn: async (data) => {
       const response = await api.post("/producto", data);
       return response.data;
     },
@@ -61,7 +60,7 @@ const Productos = () => {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: async id => {
+    mutationFn: async (id) => {
       await api.delete(`/producto/${id}`);
     },
     onSuccess: () => {
@@ -90,7 +89,7 @@ const Productos = () => {
     setIsModalOpen(true);
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (editingProducto) {
       updateMutation.mutate({ id: editingProducto.codigo, data: formData });
@@ -99,13 +98,13 @@ const Productos = () => {
     }
   };
 
-  const handleDelete = id => {
+  const handleDelete = (id) => {
     if (window.confirm("¿Está seguro de eliminar este producto?")) {
       deleteMutation.mutate(id);
     }
   };
 
-  const filteredProductos = productos?.filter(producto =>
+  const filteredProductos = productos?.filter((producto) =>
     producto.descripcion?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -129,7 +128,7 @@ const Productos = () => {
             type='text'
             placeholder='Buscar productos...'
             value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className='block w-full py-2 pl-10 pr-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
           />
         </div>
@@ -185,7 +184,7 @@ const Productos = () => {
                   </td>
                 </tr>
               ) : (
-                filteredProductos?.map(producto => (
+                filteredProductos?.map((producto) => (
                   <tr key={producto.codigo} className='hover:bg-gray-50'>
                     <td className='px-6 py-4 text-sm text-gray-900 whitespace-nowrap'>
                       {producto.codigo}
@@ -239,9 +238,14 @@ const Productos = () => {
               className='fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75'
               onClick={closeModal}
               aria-hidden='true'
-             />
+            />
 
-            <span className='hidden sm:inline-block sm:align-middle sm:h-screen' aria-hidden='true'>&#8203;</span>
+            <span
+              className='hidden sm:inline-block sm:align-middle sm:h-screen'
+              aria-hidden='true'
+            >
+              &#8203;
+            </span>
 
             <div className='inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full relative z-10'>
               <form onSubmit={handleSubmit}>
@@ -269,7 +273,7 @@ const Productos = () => {
                           type='number'
                           required
                           value={formData.codigo}
-                          onChange={e =>
+                          onChange={(e) =>
                             setFormData({ ...formData, codigo: e.target.value })
                           }
                           className='block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
@@ -285,7 +289,7 @@ const Productos = () => {
                         type='text'
                         required
                         value={formData.descripcion}
-                        onChange={e =>
+                        onChange={(e) =>
                           setFormData({
                             ...formData,
                             descripcion: e.target.value,
@@ -304,7 +308,7 @@ const Productos = () => {
                         step='0.01'
                         required
                         value={formData.precio}
-                        onChange={e =>
+                        onChange={(e) =>
                           setFormData({ ...formData, precio: e.target.value })
                         }
                         className='block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
@@ -318,7 +322,7 @@ const Productos = () => {
                       <input
                         type='number'
                         value={formData.num_existencia}
-                        onChange={e =>
+                        onChange={(e) =>
                           setFormData({
                             ...formData,
                             num_existencia: e.target.value,

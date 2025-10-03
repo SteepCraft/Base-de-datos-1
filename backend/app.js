@@ -8,12 +8,9 @@ import authRoutes from "./src/auth/auth.routes.js";
 import { sequelize } from "./src/config/sequelize.js";
 import applyAssociations from "./src/models/associations.js";
 import models from "./src/models/index.js";
-
 // Rutas CRUD - importa tus routers
 import clienteRoutes from "./src/routes/cliente.routes.js";
 import compraRoutes from "./src/routes/compra.routes.js";
-import detalleCompraRoutes from "./src/routes/detalle_compra.routes.js";
-import detalleVentaRoutes from "./src/routes/detalle_venta.routes.js";
 import inventarioRoutes from "./src/routes/inventario.routes.js";
 import productoRoutes from "./src/routes/producto.routes.js";
 import proveedorRoutes from "./src/routes/proveedor.routes.js";
@@ -21,7 +18,7 @@ import suministrosRoutes from "./src/routes/suministros.routes.js";
 import usuarioRoutes from "./src/routes/usuario.routes.js";
 import ventasRoutes from "./src/routes/ventas.routes.js";
 
-console.log("✅ Configuración completa cargada correctamente");
+console.info("✅ Configuración completa cargada correctamente");
 
 const app = express();
 
@@ -129,15 +126,21 @@ app.use(cookieParser());
 /* Montar rutas de autenticación */
 app.use("/api/auth", authRoutes);
 
+// Rutas protegidas
 app.use("/api/cliente", authenticate, clienteRoutes);
 app.use("/api/producto", authenticate, productoRoutes);
 app.use("/api/proveedor", authenticate, proveedorRoutes);
 app.use("/api/venta", authenticate, ventasRoutes);
-app.use("/api/detalle-venta", authenticate, detalleVentaRoutes);
 app.use("/api/compra", authenticate, compraRoutes);
-app.use("/api/detalle-compra", authenticate, detalleCompraRoutes);
 app.use("/api/inventario", authenticate, inventarioRoutes);
 app.use("/api/suministro", authenticate, suministrosRoutes);
-app.use("/api/usuario", authenticate, authorizeAdmin, usuarioRoutes);
+
+// Solo super admin (id=1) puede gestionar usuarios
+app.use("/api/usuario", usuarioRoutes); // Ya tiene auth y authorizeAdmin internamente
+
+// Rutas de detalles: NO son accesibles directamente
+// Se manejan automáticamente al crear ventas/compras
+// app.use("/api/detalle-venta", authenticate, detalleVentaRoutes);
+// app.use("/api/detalle-compra", authenticate, detalleCompraRoutes);
 
 export default app;

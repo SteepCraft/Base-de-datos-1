@@ -13,8 +13,8 @@ const api = axios.create({
 
 // Interceptor para manejar errores de autenticación
 api.interceptors.response.use(
-  response => response,
-  error => {
+  (response) => response,
+  (error) => {
     if (error.response?.status === 401) {
       // Sesión expirada o inválida
       localStorage.removeItem("user");

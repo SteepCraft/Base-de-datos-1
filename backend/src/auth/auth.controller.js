@@ -128,9 +128,18 @@ class AuthController {
 
       // Enviar cookie NUEVA
       const options = cookieOptions();
-      console.log("🍪 Configurando cookie con opciones:", JSON.stringify(options, null, 2));
-      console.log("🔑 JWT_SECRET actual:", JWT_SECRET ? JWT_SECRET.substring(0, 20) + "..." : "NO DEFINIDO");
-      console.log("📝 Token generado (primeros 50 chars):", token.substring(0, 50) + "...");
+      console.log(
+        "🍪 Configurando cookie con opciones:",
+        JSON.stringify(options, null, 2)
+      );
+      console.log(
+        "🔑 JWT_SECRET actual:",
+        JWT_SECRET ? `${JWT_SECRET.substring(0, 20)}...` : "NO DEFINIDO"
+      );
+      console.log(
+        "📝 Token generado (primeros 50 chars):",
+        `${token.substring(0, 50)}...`
+      );
 
       res.cookie("access_token", token, options);
 
@@ -183,7 +192,15 @@ class AuthController {
       if (!Usuario) return res.status(500).json({ error: "Error interno" });
 
       const user = await Usuario.findByPk(req.user.id, {
-        attributes: ["email", "nombres", "apellidos", "telefono"],
+        attributes: [
+          "id",
+          "email",
+          "nombres",
+          "apellidos",
+          "telefono",
+          "foto_perfil",
+          "estado",
+        ],
       });
 
       if (!user)

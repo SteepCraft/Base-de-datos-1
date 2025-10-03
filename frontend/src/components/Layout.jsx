@@ -6,6 +6,10 @@ import {
   FiPackage,
   FiTruck,
   FiShoppingCart,
+  FiShoppingBag,
+  FiArchive,
+  FiLink,
+  FiUserCheck,
   FiLogOut,
   FiMenu,
   FiX,
@@ -13,7 +17,6 @@ import {
 import { Link, Outlet, useLocation } from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext";
-
 
 const Layout = () => {
   const { user, logout } = useAuth();
@@ -26,9 +29,20 @@ const Layout = () => {
     { name: "Productos", href: "/productos", icon: FiPackage },
     { name: "Proveedores", href: "/proveedores", icon: FiTruck },
     { name: "Ventas", href: "/ventas", icon: FiShoppingCart },
+    { name: "Compras", href: "/compras", icon: FiShoppingBag },
+    { name: "Inventario", href: "/inventario", icon: FiArchive },
+    { name: "Suministros", href: "/suministros", icon: FiLink },
   ];
 
-  const isActive = path => {
+  // Solo mostrar "Usuarios" si es super admin (id=1)
+  const userNavigation =
+    user?.id === 1
+      ? [{ name: "Usuarios", href: "/usuarios", icon: FiUserCheck }]
+      : [];
+
+  const allNavigation = [...navigation, ...userNavigation];
+
+  const isActive = (path) => {
     if (path === "/") {
       return location.pathname === "/";
     }
@@ -62,7 +76,7 @@ const Layout = () => {
             </button>
           </div>
           <nav className='flex-1 px-2 py-4 space-y-1'>
-            {navigation.map(item => {
+            {allNavigation.map((item) => {
               const Icon = item.icon;
               return (
                 <Link
@@ -91,7 +105,7 @@ const Layout = () => {
             <span className='text-xl font-bold text-blue-600'>Tienda IT</span>
           </div>
           <nav className='flex-1 px-2 py-4 space-y-1'>
-            {navigation.map(item => {
+            {allNavigation.map((item) => {
               const Icon = item.icon;
               return (
                 <Link

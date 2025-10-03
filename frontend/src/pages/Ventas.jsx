@@ -4,7 +4,6 @@ import { FiPlus, FiEye, FiSearch, FiX, FiShoppingCart } from "react-icons/fi";
 
 import api from "../config/api";
 
-
 const Ventas = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [viewingVenta, setViewingVenta] = useState(null);
@@ -47,14 +46,6 @@ const Ventas = () => {
     },
   });
 
-  const { data: detallesVenta } = useQuery({
-    queryKey: ["detalles-venta"],
-    queryFn: async () => {
-      const response = await api.get("/detalle-venta");
-      return response.data;
-    },
-  });
-
   // Definir closeModal antes de las mutaciones
   const closeModal = () => {
     setIsModalOpen(false);
@@ -71,30 +62,18 @@ const Ventas = () => {
   };
 
   const createMutation = useMutation({
-    mutationFn: async data => {
-      // Primero crear la venta
-      const ventaResponse = await api.post("/venta", {
+    mutationFn: async (data) => {
+      // El backend crea la venta Y los detalles automáticamente
+      const response = await api.post("/venta", {
         codigo: data.codigo,
         id_cliente: data.id_cliente,
-        fecha_venta: new Date().toISOString(),
-        valor_tot: data.valor_tot,
+        productos: data.productos, // Backend espera array de productos
       });
-
-      // Luego crear los detalles de venta
-      for (const producto of data.productos) {
-        await api.post("/detalle-venta", {
-          venta_codigo: data.codigo,
-          codigo_producto: producto.codigo_producto,
-          cant_venta: producto.cant_venta,
-          precio_producto: producto.precio_producto,
-        });
-      }
-
-      return ventaResponse.data;
+      return response.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["ventas"]);
-      queryClient.invalidateQueries(["detalles-venta"]);
+      queryClient.invalidateQueries(["productos"]); // Actualizar stock
       closeModal();
     },
   });
@@ -119,7 +98,7 @@ const Ventas = () => {
     }
 
     const producto = productos?.find(
-      p => p.codigo === parseInt(productToAdd.codigo_producto, 10)
+      (p) => p.codigo === parseInt(productToAdd.codigo_producto, 10)
     );
     if (!producto) {
       alert("Producto no encontrado");
@@ -144,14 +123,14 @@ const Ventas = () => {
     });
   };
 
-  const handleRemoveProduct = index => {
+  const handleRemoveProduct = (index) => {
     setFormData({
       ...formData,
       productos: formData.productos.filter((_, i) => i !== index),
     });
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     if (formData.productos.length === 0) {
@@ -160,7 +139,8 @@ const Ventas = () => {
     }
 
     const valor_tot = formData.productos.reduce(
-      (sum, p) => sum + parseFloat(p.precio_producto) * parseInt(p.cant_venta, 10),
+      (sum, p) =>
+        sum + parseFloat(p.precio_producto) * parseInt(p.cant_venta, 10),
       0
     );
 
@@ -170,14 +150,13 @@ const Ventas = () => {
     });
   };
 
-  const viewDetails = venta => {
-    const detalles =
-      detallesVenta?.filter(d => d.venta_codigo === venta.codigo) || [];
-    setViewingVenta({ ...venta, detalles });
+  const viewDetails = (venta) => {
+    // El backend ya incluye detalleVentas en la respuesta
+    setViewingVenta(venta);
   };
 
-  const filteredVentas = ventas?.filter(venta => {
-    const cliente = clientes?.find(c => c.id === venta.id_cliente);
+  const filteredVentas = ventas?.filter((venta) => {
+    const cliente = clientes?.find((c) => c.id === venta.id_cliente);
     const clienteNombre = cliente
       ? `${cliente.nombres} ${cliente.apellidos}`
       : "";
@@ -187,13 +166,13 @@ const Ventas = () => {
     );
   });
 
-  const getClienteName = id_cliente => {
-    const cliente = clientes?.find(c => c.id === id_cliente);
+  const getClienteName = (id_cliente) => {
+    const cliente = clientes?.find((c) => c.id === id_cliente);
     return cliente ? `${cliente.nombres} ${cliente.apellidos}` : "N/A";
   };
 
-  const getProductName = codigo_producto => {
-    const producto = productos?.find(p => p.codigo === codigo_producto);
+  const getProductName = (codigo_producto) => {
+    const producto = productos?.find((p) => p.codigo === codigo_producto);
     return producto ? producto.descripcion : "N/A";
   };
 
@@ -217,7 +196,7 @@ const Ventas = () => {
             type='text'
             placeholder='Buscar ventas...'
             value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className='block w-full py-2 pl-10 pr-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
           />
         </div>
@@ -273,7 +252,7 @@ const Ventas = () => {
                   </td>
                 </tr>
               ) : (
-                filteredVentas?.map(venta => (
+                filteredVentas?.map((venta) => (
                   <tr key={venta.codigo} className='hover:bg-gray-50'>
                     <td className='px-6 py-4 text-sm text-gray-900 whitespace-nowrap'>
                       #{venta.codigo}
@@ -311,9 +290,14 @@ const Ventas = () => {
               className='fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75'
               onClick={closeModal}
               aria-hidden='true'
-             />
+            />
 
-            <span className='hidden sm:inline-block sm:align-middle sm:h-screen' aria-hidden='true'>&#8203;</span>
+            <span
+              className='hidden sm:inline-block sm:align-middle sm:h-screen'
+              aria-hidden='true'
+            >
+              &#8203;
+            </span>
 
             <div className='inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full relative z-10'>
               <form onSubmit={handleSubmit}>
@@ -342,7 +326,7 @@ const Ventas = () => {
                           type='number'
                           required
                           value={formData.codigo}
-                          onChange={e =>
+                          onChange={(e) =>
                             setFormData({ ...formData, codigo: e.target.value })
                           }
                           className='block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
@@ -356,7 +340,7 @@ const Ventas = () => {
                         <select
                           required
                           value={formData.id_cliente}
-                          onChange={e =>
+                          onChange={(e) =>
                             setFormData({
                               ...formData,
                               id_cliente: e.target.value,
@@ -365,7 +349,7 @@ const Ventas = () => {
                           className='block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
                         >
                           <option value=''>Seleccione un cliente</option>
-                          {clientes?.map(cliente => (
+                          {clientes?.map((cliente) => (
                             <option key={cliente.id} value={cliente.id}>
                               {cliente.nombres} {cliente.apellidos}
                             </option>
@@ -382,9 +366,9 @@ const Ventas = () => {
                       <div className='grid grid-cols-4 gap-2 mb-2'>
                         <select
                           value={productToAdd.codigo_producto}
-                          onChange={e => {
+                          onChange={(e) => {
                             const producto = productos?.find(
-                              p => p.codigo === parseInt(e.target.value, 10)
+                              (p) => p.codigo === parseInt(e.target.value, 10)
                             );
                             setProductToAdd({
                               ...productToAdd,
@@ -395,7 +379,7 @@ const Ventas = () => {
                           className='col-span-2 px-3 py-2 text-sm border border-gray-300 rounded-lg'
                         >
                           <option value=''>Seleccione producto</option>
-                          {productos?.map(producto => (
+                          {productos?.map((producto) => (
                             <option
                               key={producto.codigo}
                               value={producto.codigo}
@@ -409,7 +393,7 @@ const Ventas = () => {
                           min='1'
                           placeholder='Cantidad'
                           value={productToAdd.cant_venta}
-                          onChange={e =>
+                          onChange={(e) =>
                             setProductToAdd({
                               ...productToAdd,
                               cant_venta: e.target.value,
@@ -541,9 +525,14 @@ const Ventas = () => {
               className='fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75'
               onClick={() => setViewingVenta(null)}
               aria-hidden='true'
-             />
+            />
 
-            <span className='hidden sm:inline-block sm:align-middle sm:h-screen' aria-hidden='true'>&#8203;</span>
+            <span
+              className='hidden sm:inline-block sm:align-middle sm:h-screen'
+              aria-hidden='true'
+            >
+              &#8203;
+            </span>
 
             <div className='inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full relative z-10'>
               <div className='px-4 pt-5 pb-4 bg-white sm:p-6 sm:pb-4'>
@@ -598,10 +587,11 @@ const Ventas = () => {
                         </tr>
                       </thead>
                       <tbody className='divide-y divide-gray-200'>
-                        {viewingVenta.detalles?.map((detalle, index) => (
+                        {viewingVenta.detalleVentas?.map((detalle, index) => (
                           <tr key={index}>
                             <td className='px-4 py-2 text-sm'>
-                              {getProductName(detalle.codigo_producto)}
+                              {detalle.producto?.descripcion ||
+                                getProductName(detalle.codigo_producto)}
                             </td>
                             <td className='px-4 py-2 text-sm'>
                               {detalle.cant_venta}

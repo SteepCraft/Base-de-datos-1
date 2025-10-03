@@ -5,10 +5,14 @@ import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 import Clientes from "./pages/Clientes";
+import Compras from "./pages/Compras";
 import Dashboard from "./pages/Dashboard";
+import Inventario from "./pages/Inventario";
 import Login from "./pages/Login";
 import Productos from "./pages/Productos";
 import Proveedores from "./pages/Proveedores";
+import Suministros from "./pages/Suministros";
+import Usuarios from "./pages/Usuarios";
 import Ventas from "./pages/Ventas";
 
 const queryClient = new QueryClient({
@@ -41,6 +45,10 @@ function App() {
               <Route path='productos' element={<Productos />} />
               <Route path='proveedores' element={<Proveedores />} />
               <Route path='ventas' element={<Ventas />} />
+              <Route path='compras' element={<Compras />} />
+              <Route path='inventario' element={<Inventario />} />
+              <Route path='suministros' element={<Suministros />} />
+              <Route path='usuarios' element={<Usuarios />} />
             </Route>
             <Route path='*' element={<Navigate to='/' replace />} />
           </Routes>

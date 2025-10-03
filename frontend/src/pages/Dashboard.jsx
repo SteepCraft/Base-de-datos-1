@@ -82,7 +82,7 @@ const Dashboard = () => {
 
       {/* Stats */}
       <div className='grid grid-cols-1 gap-6 mb-8 sm:grid-cols-2 lg:grid-cols-4'>
-        {stats.map(stat => {
+        {stats.map((stat) => {
           const Icon = stat.icon;
           return (
             <div
@@ -126,9 +126,9 @@ const Dashboard = () => {
           </div>
           <div className='px-6 py-4'>
             {productos
-              ?.filter(p => p.num_existencia < 10)
+              ?.filter((p) => p.num_existencia < 10)
               .slice(0, 5)
-              .map(producto => (
+              .map((producto) => (
                 <div
                   key={producto.codigo}
                   className='flex items-center justify-between py-3 border-b border-gray-100 last:border-0'
@@ -166,7 +166,7 @@ const Dashboard = () => {
             {ventas
               ?.slice(-5)
               .reverse()
-              .map(venta => (
+              .map((venta) => (
                 <div
                   key={venta.codigo}
                   className='flex items-center justify-between py-3 border-b border-gray-100 last:border-0'

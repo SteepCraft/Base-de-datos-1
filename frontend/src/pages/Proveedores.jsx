@@ -4,7 +4,6 @@ import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiX } from "react-icons/fi";
 
 import api from "../config/api";
 
-
 const Proveedores = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProveedor, setEditingProveedor] = useState(null);
@@ -43,7 +42,7 @@ const Proveedores = () => {
   };
 
   const createMutation = useMutation({
-    mutationFn: async data => {
+    mutationFn: async (data) => {
       const response = await api.post("/proveedor", data);
       return response.data;
     },
@@ -65,7 +64,7 @@ const Proveedores = () => {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: async id => {
+    mutationFn: async (id) => {
       await api.delete(`/proveedor/${id}`);
     },
     onSuccess: () => {
@@ -98,7 +97,7 @@ const Proveedores = () => {
     setIsModalOpen(true);
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (editingProveedor) {
       updateMutation.mutate({ id: editingProveedor.id, data: formData });
@@ -107,13 +106,13 @@ const Proveedores = () => {
     }
   };
 
-  const handleDelete = id => {
+  const handleDelete = (id) => {
     if (window.confirm("¿Está seguro de eliminar este proveedor?")) {
       deleteMutation.mutate(id);
     }
   };
 
-  const filteredProveedores = proveedores?.filter(proveedor =>
+  const filteredProveedores = proveedores?.filter((proveedor) =>
     `${proveedor.nombres} ${proveedor.apellidos}`
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
@@ -139,7 +138,7 @@ const Proveedores = () => {
             type='text'
             placeholder='Buscar proveedores...'
             value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className='block w-full py-2 pl-10 pr-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
           />
         </div>
@@ -201,7 +200,7 @@ const Proveedores = () => {
                   </td>
                 </tr>
               ) : (
-                filteredProveedores?.map(proveedor => (
+                filteredProveedores?.map((proveedor) => (
                   <tr key={proveedor.id} className='hover:bg-gray-50'>
                     <td className='px-6 py-4 text-sm text-gray-900 whitespace-nowrap'>
                       {proveedor.id}
@@ -251,9 +250,14 @@ const Proveedores = () => {
               className='fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75'
               onClick={closeModal}
               aria-hidden='true'
-             />
+            />
 
-            <span className='hidden sm:inline-block sm:align-middle sm:h-screen' aria-hidden='true'>&#8203;</span>
+            <span
+              className='hidden sm:inline-block sm:align-middle sm:h-screen'
+              aria-hidden='true'
+            >
+              &#8203;
+            </span>
 
             <div className='inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full relative z-10'>
               <form onSubmit={handleSubmit}>
@@ -284,7 +288,7 @@ const Proveedores = () => {
                           required
                           maxLength={10}
                           value={formData.id}
-                          onChange={e =>
+                          onChange={(e) =>
                             setFormData({ ...formData, id: e.target.value })
                           }
                           className='block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
@@ -300,7 +304,7 @@ const Proveedores = () => {
                         type='text'
                         required
                         value={formData.nombres}
-                        onChange={e =>
+                        onChange={(e) =>
                           setFormData({ ...formData, nombres: e.target.value })
                         }
                         className='block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
@@ -315,7 +319,7 @@ const Proveedores = () => {
                         type='text'
                         required
                         value={formData.apellidos}
-                        onChange={e =>
+                        onChange={(e) =>
                           setFormData({
                             ...formData,
                             apellidos: e.target.value,
@@ -333,7 +337,7 @@ const Proveedores = () => {
                         type='text'
                         required
                         value={formData.direccion}
-                        onChange={e =>
+                        onChange={(e) =>
                           setFormData({
                             ...formData,
                             direccion: e.target.value,
@@ -351,7 +355,7 @@ const Proveedores = () => {
                         type='text'
                         required
                         value={formData.providencia}
-                        onChange={e =>
+                        onChange={(e) =>
                           setFormData({
                             ...formData,
                             providencia: e.target.value,
@@ -369,7 +373,7 @@ const Proveedores = () => {
                         type='tel'
                         required
                         value={formData.telefono}
-                        onChange={e =>
+                        onChange={(e) =>
                           setFormData({ ...formData, telefono: e.target.value })
                         }
                         className='block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
