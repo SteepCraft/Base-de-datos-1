@@ -42,7 +42,7 @@ class UsuarioController {
     try {
       const usuarios = await models.Usuario.findAll();
       // usuarios es un array de instancias -> convertir y sanear cada uno
-      const usuariosSafe = usuarios.map(u => sanitizeUsuario(u));
+      const usuariosSafe = usuarios.map((u) => sanitizeUsuario(u));
       return res.json(usuariosSafe);
     } catch (error) {
       return res.status(500).json({ error: error.message });

@@ -1,6 +1,6 @@
+import bcrypt from "bcrypt";
 import { sequelize } from "../config/sequelize.js";
 import models from "../models/index.js";
-import bcrypt from "bcrypt";
 
 // Definición de credenciales de administrador por defecto
 const DEFAULT_ADMIN = {

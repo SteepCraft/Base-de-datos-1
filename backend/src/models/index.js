@@ -1,5 +1,5 @@
-import * as modelsExports from "./models-export.js";
 import applyAssociations from "./associations.js";
+import * as modelsExports from "./models-export.js";
 
 // modelsExports contiene getters que al importarlos ya evaluarán
 const models = { ...modelsExports };
