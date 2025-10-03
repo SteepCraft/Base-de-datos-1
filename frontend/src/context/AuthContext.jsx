@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
+
 import api from "../config/api";
 
 const AuthContext = createContext(null);
@@ -8,25 +9,34 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Verificar si hay un usuario en localStorage
-    const storedUser = localStorage.getItem("user");
-    const token = localStorage.getItem("access_token");
-
-    if (storedUser && token) {
-      setUser(JSON.parse(storedUser));
+  const checkAuth = useCallback(async () => {
+    try {
+      // Intentar obtener el perfil del usuario con la cookie existente
+      const response = await api.get("/auth/me");
+      setUser(response.data.user);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+    } catch (error) {
+      // Si falla, no hay sesión válida
+      setUser(null);
+      localStorage.removeItem("user");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
+
+  // Verificar sesión al cargar la aplicación
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
 
   const login = async (email, password) => {
     try {
       const response = await api.post("/auth/login", { email, password });
-      const { token, user: userData } = response.data;
+      const { user: userData } = response.data;
 
-      localStorage.setItem("access_token", token);
-      localStorage.setItem("user", JSON.stringify(userData));
+      // Guardar usuario en estado y localStorage (la cookie se guarda automáticamente)
       setUser(userData);
+      localStorage.setItem("user", JSON.stringify(userData));
 
       return { success: true };
     } catch (error) {
@@ -43,7 +53,6 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
     } finally {
-      localStorage.removeItem("access_token");
       localStorage.removeItem("user");
       setUser(null);
     }
@@ -55,6 +64,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     loading,
     isAuthenticated: !!user,
+    checkAuth, // Exportar para poder re-verificar si es necesario
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

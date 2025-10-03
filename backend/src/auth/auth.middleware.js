@@ -1,6 +1,10 @@
 // src/middlewares/auth.middleware.js
 import jwt from "jsonwebtoken";
-const JWT_SECRET = process.env.JWT_SECRET || "changeme";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 export function authenticate(req, res, next) {
   try {

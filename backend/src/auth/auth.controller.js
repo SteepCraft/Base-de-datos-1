@@ -1,11 +1,11 @@
-import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
 import models from "../models/index.js";
 
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const { JWT_SECRET } = process.env;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN ?? "1h";
 const COOKIE_SECURE = process.env.COOKIE_SECURE === "true" || false;
 const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN ?? undefined;
@@ -34,13 +34,20 @@ function signToken(payload) {
 }
 
 function cookieOptions() {
-  return {
+  const options = {
     httpOnly: true,
     secure: COOKIE_SECURE,
-    sameSite: "lax",
-    domain: COOKIE_DOMAIN,
+    sameSite: COOKIE_SECURE ? "none" : "lax",
     maxAge: parseDurationToMs(JWT_EXPIRES_IN) ?? 60 * 60 * 1000, // fallback 1h
+    path: "/", // Asegurar que la cookie esté disponible en todas las rutas
   };
+
+  // Solo agregar domain si está definido y no vacío
+  if (COOKIE_DOMAIN && COOKIE_DOMAIN.trim() !== "") {
+    options.domain = COOKIE_DOMAIN;
+  }
+
+  return options;
 }
 
 class AuthController {
@@ -113,8 +120,19 @@ class AuthController {
           .json({ error: "Error interno de autenticación" });
       }
 
-      // Enviar cookie
-      res.cookie("access_token", token, cookieOptions());
+      // Primero limpiar cualquier cookie antigua (eliminar firmas viejas)
+      res.clearCookie("access_token", {
+        httpOnly: true,
+        path: "/",
+      });
+
+      // Enviar cookie NUEVA
+      const options = cookieOptions();
+      console.log("🍪 Configurando cookie con opciones:", JSON.stringify(options, null, 2));
+      console.log("🔑 JWT_SECRET actual:", JWT_SECRET ? JWT_SECRET.substring(0, 20) + "..." : "NO DEFINIDO");
+      console.log("📝 Token generado (primeros 50 chars):", token.substring(0, 50) + "...");
+
+      res.cookie("access_token", token, options);
 
       const safeUser = {
         id: d.id,
@@ -138,12 +156,18 @@ class AuthController {
 
   static async logout(req, res) {
     try {
-      res.clearCookie("access_token", {
+      const clearOptions = {
         httpOnly: true,
         secure: COOKIE_SECURE,
-        domain: COOKIE_DOMAIN,
-        sameSite: "lax",
-      });
+        sameSite: COOKIE_SECURE ? "none" : "lax",
+        path: "/",
+      };
+
+      if (COOKIE_DOMAIN && COOKIE_DOMAIN.trim() !== "") {
+        clearOptions.domain = COOKIE_DOMAIN;
+      }
+
+      res.clearCookie("access_token", clearOptions);
       return res.json({ message: "Logout exitoso" });
     } catch (err) {
       console.error("Auth.logout error:", err);

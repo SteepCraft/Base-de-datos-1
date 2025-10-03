@@ -23,7 +23,7 @@ process.on("unhandledRejection", (reason, promise) => {
   });
 });
 
-process.on("uncaughtException", err => {
+process.on("uncaughtException", (err) => {
   const errorContext = {
     message: err.message,
     stack: err.stack,

@@ -1,14 +1,25 @@
 import { randomBytes } from "crypto";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 import express from "express";
 import { rateLimit } from "express-rate-limit";
-import cookieParser from "cookie-parser";
-
-import { sequelize } from "./src/config/sequelize.js";
-import models from "./src/models/index.js";
-import applyAssociations from "./src/models/associations.js";
-
-import authRoutes from "./src/auth/auth.routes.js";
 import { authenticate, authorizeAdmin } from "./src/auth/auth.middleware.js";
+import authRoutes from "./src/auth/auth.routes.js";
+import { sequelize } from "./src/config/sequelize.js";
+import applyAssociations from "./src/models/associations.js";
+import models from "./src/models/index.js";
+
+// Rutas CRUD - importa tus routers
+import clienteRoutes from "./src/routes/cliente.routes.js";
+import compraRoutes from "./src/routes/compra.routes.js";
+import detalleCompraRoutes from "./src/routes/detalle_compra.routes.js";
+import detalleVentaRoutes from "./src/routes/detalle_venta.routes.js";
+import inventarioRoutes from "./src/routes/inventario.routes.js";
+import productoRoutes from "./src/routes/producto.routes.js";
+import proveedorRoutes from "./src/routes/proveedor.routes.js";
+import suministrosRoutes from "./src/routes/suministros.routes.js";
+import usuarioRoutes from "./src/routes/usuario.routes.js";
+import ventasRoutes from "./src/routes/ventas.routes.js";
 
 console.log("✅ Configuración completa cargada correctamente");
 
@@ -48,7 +59,7 @@ const app = express();
 
     // Probar accesibilidad de cada modelo (findOne simple)
     const modelNames = Object.keys(models).filter(
-      k =>
+      (k) =>
         typeof models[k] === "function" &&
         typeof models[k].findOne === "function"
     );
@@ -74,6 +85,16 @@ const app = express();
 /**
  * Middlewares globales
  */
+
+// CORS - Permitir peticiones desde el frontend
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || "http://localhost:5173",
+  credentials: true, // Permitir cookies
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+app.use(cors(corsOptions));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -107,18 +128,6 @@ app.use(apiLimiter);
 app.use(cookieParser());
 /* Montar rutas de autenticación */
 app.use("/api/auth", authRoutes);
-
-// Rutas CRUD - importa tus routers
-import clienteRoutes from "./src/routes/cliente.routes.js";
-import productoRoutes from "./src/routes/producto.routes.js";
-import proveedorRoutes from "./src/routes/proveedor.routes.js";
-import ventasRoutes from "./src/routes/ventas.routes.js";
-import detalleVentaRoutes from "./src/routes/detalle_venta.routes.js";
-import compraRoutes from "./src/routes/compra.routes.js";
-import detalleCompraRoutes from "./src/routes/detalle_compra.routes.js";
-import inventarioRoutes from "./src/routes/inventario.routes.js";
-import suministrosRoutes from "./src/routes/suministros.routes.js";
-import usuarioRoutes from "./src/routes/usuario.routes.js";
 
 app.use("/api/cliente", authenticate, clienteRoutes);
 app.use("/api/producto", authenticate, productoRoutes);
