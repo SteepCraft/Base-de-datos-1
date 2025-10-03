@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import api from "../config/api";
 import { FiUsers, FiPackage, FiTruck, FiShoppingCart } from "react-icons/fi";
+
+import api from "../config/api";
 
 const Dashboard = () => {
   const { data: clientes } = useQuery({

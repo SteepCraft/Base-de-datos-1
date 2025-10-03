@@ -1,7 +1,9 @@
-import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import api from "../config/api";
+import { useState } from "react";
 import { FiPlus, FiEye, FiSearch, FiX, FiShoppingCart } from "react-icons/fi";
+
+import api from "../config/api";
+
 
 const Ventas = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -53,6 +55,21 @@ const Ventas = () => {
     },
   });
 
+  // Definir closeModal antes de las mutaciones
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setFormData({
+      codigo: "",
+      id_cliente: "",
+      productos: [],
+    });
+    setProductToAdd({
+      codigo_producto: "",
+      cant_venta: 1,
+      precio_producto: "",
+    });
+  };
+
   const createMutation = useMutation({
     mutationFn: async data => {
       // Primero crear la venta
@@ -91,20 +108,6 @@ const Ventas = () => {
     setIsModalOpen(true);
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setFormData({
-      codigo: "",
-      id_cliente: "",
-      productos: [],
-    });
-    setProductToAdd({
-      codigo_producto: "",
-      cant_venta: 1,
-      precio_producto: "",
-    });
-  };
-
   const handleAddProduct = () => {
     if (
       !productToAdd.codigo_producto ||
@@ -116,7 +119,7 @@ const Ventas = () => {
     }
 
     const producto = productos?.find(
-      p => p.codigo === parseInt(productToAdd.codigo_producto)
+      p => p.codigo === parseInt(productToAdd.codigo_producto, 10)
     );
     if (!producto) {
       alert("Producto no encontrado");
@@ -157,7 +160,7 @@ const Ventas = () => {
     }
 
     const valor_tot = formData.productos.reduce(
-      (sum, p) => sum + parseFloat(p.precio_producto) * parseInt(p.cant_venta),
+      (sum, p) => sum + parseFloat(p.precio_producto) * parseInt(p.cant_venta, 10),
       0
     );
 
@@ -307,9 +310,12 @@ const Ventas = () => {
             <div
               className='fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75'
               onClick={closeModal}
-            ></div>
+              aria-hidden='true'
+             />
 
-            <div className='inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full'>
+            <span className='hidden sm:inline-block sm:align-middle sm:h-screen' aria-hidden='true'>&#8203;</span>
+
+            <div className='inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full relative z-10'>
               <form onSubmit={handleSubmit}>
                 <div className='px-4 pt-5 pb-4 bg-white sm:p-6 sm:pb-4'>
                   <div className='flex items-center justify-between mb-4'>
@@ -378,7 +384,7 @@ const Ventas = () => {
                           value={productToAdd.codigo_producto}
                           onChange={e => {
                             const producto = productos?.find(
-                              p => p.codigo === parseInt(e.target.value)
+                              p => p.codigo === parseInt(e.target.value, 10)
                             );
                             setProductToAdd({
                               ...productToAdd,
@@ -439,7 +445,7 @@ const Ventas = () => {
                               <th className='px-4 py-2 text-xs font-medium text-left text-gray-500'>
                                 Subtotal
                               </th>
-                              <th className='px-4 py-2'></th>
+                              <th className='px-4 py-2' />
                             </tr>
                           </thead>
                           <tbody className='divide-y divide-gray-200'>
@@ -461,7 +467,7 @@ const Ventas = () => {
                                   $
                                   {(
                                     parseFloat(producto.precio_producto) *
-                                    parseInt(producto.cant_venta)
+                                    parseInt(producto.cant_venta, 10)
                                   ).toFixed(2)}
                                 </td>
                                 <td className='px-4 py-2 text-sm'>
@@ -491,12 +497,12 @@ const Ventas = () => {
                                     (sum, p) =>
                                       sum +
                                       parseFloat(p.precio_producto) *
-                                        parseInt(p.cant_venta),
+                                        parseInt(p.cant_venta, 10),
                                     0
                                   )
                                   .toFixed(2)}
                               </td>
-                              <td></td>
+                              <td />
                             </tr>
                           </tfoot>
                         </table>
@@ -534,9 +540,12 @@ const Ventas = () => {
             <div
               className='fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75'
               onClick={() => setViewingVenta(null)}
-            ></div>
+              aria-hidden='true'
+             />
 
-            <div className='inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full'>
+            <span className='hidden sm:inline-block sm:align-middle sm:h-screen' aria-hidden='true'>&#8203;</span>
+
+            <div className='inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full relative z-10'>
               <div className='px-4 pt-5 pb-4 bg-white sm:p-6 sm:pb-4'>
                 <div className='flex items-center justify-between mb-4'>
                   <h3 className='text-lg font-medium text-gray-900'>
@@ -604,7 +613,7 @@ const Ventas = () => {
                               $
                               {(
                                 parseFloat(detalle.precio_producto) *
-                                parseInt(detalle.cant_venta)
+                                parseInt(detalle.cant_venta, 10)
                               ).toFixed(2)}
                             </td>
                           </tr>

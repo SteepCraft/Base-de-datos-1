@@ -1,7 +1,9 @@
-import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import api from "../config/api";
+import { useState } from "react";
 import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiX } from "react-icons/fi";
+
+import api from "../config/api";
+
 
 const Clientes = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,6 +25,18 @@ const Clientes = () => {
       return response.data;
     },
   });
+
+  // Definir funciones antes de usarlas en las mutaciones
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setEditingCliente(null);
+    setFormData({
+      nombres: "",
+      apellidos: "",
+      direccion: "",
+      telefono: "",
+    });
+  };
 
   const createMutation = useMutation({
     mutationFn: async data => {
@@ -74,17 +88,6 @@ const Clientes = () => {
       });
     }
     setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setEditingCliente(null);
-    setFormData({
-      nombres: "",
-      apellidos: "",
-      direccion: "",
-      telefono: "",
-    });
   };
 
   const handleSubmit = e => {
@@ -233,9 +236,12 @@ const Clientes = () => {
             <div
               className='fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75'
               onClick={closeModal}
-            ></div>
+              aria-hidden='true'
+             />
 
-            <div className='inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full'>
+            <span className='hidden sm:inline-block sm:align-middle sm:h-screen' aria-hidden='true'>&#8203;</span>
+
+            <div className='inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full relative z-10'>
               <form onSubmit={handleSubmit}>
                 <div className='px-4 pt-5 pb-4 bg-white sm:p-6 sm:pb-4'>
                   <div className='flex items-center justify-between mb-4'>
