@@ -2,9 +2,10 @@ packages:
   - backend
   - frontend
 
-minimumReleaseAge: 1440 # 24 horas
+minimumReleaseAge: 1440
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
+  - bcrypt
   - esbuild
   - oracledb
