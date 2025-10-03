@@ -1,7 +1,5 @@
-import { useState } from "react";
-import { Link, Outlet, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
-import { useAuth } from "../context/AuthContext";
+import { useState } from "react";
 import {
   FiHome,
   FiUsers,
@@ -12,6 +10,10 @@ import {
   FiMenu,
   FiX,
 } from "react-icons/fi";
+import { Link, Outlet, useLocation } from "react-router-dom";
+
+import { useAuth } from "../context/AuthContext";
+
 
 const Layout = () => {
   const { user, logout } = useAuth();
