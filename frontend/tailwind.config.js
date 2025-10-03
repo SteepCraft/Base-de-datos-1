@@ -2,10 +2,19 @@
 export default {
   content: [
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}", // Esto es crucial: le dice a Tailwind dónde escanear tus archivos para encontrar las clases.
+    "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      // Agregar configuraciones personalizadas aquí si es necesario
+      cursor: {
+        'pointer': 'pointer',
+      },
+    },
   },
   plugins: [],
+  // Configuración adicional para Tailwind v4
+  future: {
+    hoverOnlyWhenSupported: true, // Hover solo en dispositivos que lo soporten
+  },
 };

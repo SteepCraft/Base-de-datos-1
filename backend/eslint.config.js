@@ -1,14 +1,12 @@
-// ESLint Flat Config - React 19 + Vite 7 + TailwindCSS 4
+// ESLint Flat Config - Node.js 22 + Express 5 + ESM
 import js from "@eslint/js";
 import typescriptPlugin from "@typescript-eslint/eslint-plugin";
 import typescriptParser from "@typescript-eslint/parser";
 import prettierConfig from "eslint-config-prettier/flat";
-import pluginImport from "eslint-plugin-import";
-import pluginJsxA11y from "eslint-plugin-jsx-a11y";
-import pluginReact from "eslint-plugin-react";
-import pluginReactHooks from "eslint-plugin-react-hooks";
-import pluginReactRefresh from "eslint-plugin-react-refresh";
-// import pluginTailwind from "eslint-plugin-tailwindcss"; // BETA no soporta TailwindCSS v4 aún
+import importPlugin from "eslint-plugin-import";
+import nodePlugin from "eslint-plugin-n";
+import promisePlugin from "eslint-plugin-promise";
+import securityPlugin from "eslint-plugin-security";
 import globals from "globals";
 
 const config = [];
@@ -18,118 +16,94 @@ const config = [];
 // ============================================================================
 config.push(js.configs.recommended);
 
-// ============================================================================
-// REACT PLUGIN - Core React rules
-// ============================================================================
+// Plugin N (Node.js)
 config.push({
-  plugins: { react: pluginReact },
-  settings: { react: { version: "detect" } },
+  plugins: { n: nodePlugin },
   rules: {
-    ...pluginReact.configs.recommended.rules,
-    // React 19 - No requiere React en scope
-    "react/react-in-jsx-scope": "off",
-    "react/jsx-uses-react": "off",
-    // Mejores prácticas
-    "react/prop-types": "off", // Usar TypeScript
-    "react/jsx-uses-vars": "error",
-    "react/jsx-no-target-blank": ["error", { allowReferrer: true }],
-    "react/self-closing-comp": "warn",
-    "react/jsx-curly-brace-presence": [
-      "warn",
-      { props: "never", children: "never" },
-    ],
+    // Configuración moderna de eslint-plugin-n
+    "n/no-missing-import": "off", // Manejado por import plugin
+    "n/no-unsupported-features/es-syntax": "off", // Permitir ES modules
+    "n/no-unsupported-features/node-builtins": "error",
+    "n/no-deprecated-api": "error",
+    "n/no-extraneous-import": "error",
+    "n/no-extraneous-require": "error",
+    "n/no-unpublished-import": "off",
+    "n/prefer-global/buffer": "warn",
+    "n/prefer-global/process": "warn",
   },
 });
 
 // ============================================================================
-// JSX ACCESSIBILITY (jsx-a11y)
+// PROMISE PLUGIN - Async/Promise patterns
 // ============================================================================
 config.push({
-  plugins: { "jsx-a11y": pluginJsxA11y },
+  plugins: { promise: promisePlugin },
   rules: {
-    ...pluginJsxA11y.configs.recommended.rules,
-    "jsx-a11y/anchor-is-valid": [
-      "warn",
-      {
-        components: ["Link"],
-        specialLink: ["to"],
-      },
-    ],
-    // Temporalmente más permisivos - mejorar después
-    "jsx-a11y/click-events-have-key-events": "warn",
-    "jsx-a11y/no-static-element-interactions": "warn",
-    "jsx-a11y/no-noninteractive-element-interactions": "warn",
-    "jsx-a11y/label-has-associated-control": [
-      "warn",
-      {
-        assert: "either",
-      },
-    ],
+    "promise/always-return": "warn",
+    "promise/catch-or-return": "error",
+    "promise/no-return-wrap": "error",
+    "promise/param-names": "error",
+    "promise/no-nesting": "warn",
+    "promise/no-promise-in-callback": "warn",
+    "promise/no-callback-in-promise": "warn",
+    "promise/avoid-new": "off",
+    "promise/no-new-statics": "error",
+    "promise/valid-params": "error",
   },
 });
 
 // ============================================================================
-// TAILWINDCSS - Orden de clases y validación
+// SECURITY PLUGIN - Backend security checks
 // ============================================================================
-// TODO: Activar cuando eslint-plugin-tailwindcss soporte TailwindCSS v4
-// Issue: https://github.com/francoismassart/eslint-plugin-tailwindcss/issues
-// La versión beta aún no puede resolver el config de TailwindCSS v4
-/*
 config.push({
-  plugins: { tailwindcss: pluginTailwind },
+  plugins: { security: securityPlugin },
   rules: {
-    "tailwindcss/classnames-order": "warn",
-    "tailwindcss/no-custom-classname": "off",
-    "tailwindcss/no-contradicting-classname": "error",
-    "tailwindcss/enforces-negative-arbitrary-values": "warn",
-    "tailwindcss/enforces-shorthand": "warn",
-    "tailwindcss/migration-from-tailwind-2": "off",
-    "tailwindcss/no-arbitrary-value": "off",
-  },
-  settings: {
-    tailwindcss: {
-      callees: ["classnames", "clsx", "cn", "twMerge"],
-      config: "tailwind.config.js",
-    },
+    "security/detect-unsafe-regex": "warn",
+    "security/detect-non-literal-regexp": "warn",
+    "security/detect-non-literal-fs-filename": "warn",
+    "security/detect-object-injection": "off", // Muchos falsos positivos
+    "security/detect-possible-timing-attacks": "warn",
+    "security/detect-eval-with-expression": "error",
+    "security/detect-no-csrf-before-method-override": "error",
   },
 });
-*/
 
 // ============================================================================
 // IMPORT PLUGIN - Orden y validación de imports
 // ============================================================================
 config.push({
-  plugins: { import: pluginImport },
+  plugins: { import: importPlugin },
   settings: {
     "import/resolver": {
       node: {
-        extensions: [".js", ".jsx", ".ts", ".tsx"],
+        extensions: [".js", ".mjs", ".ts", ".d.ts"],
       },
     },
     "import/parsers": {
-      "@typescript-eslint/parser": [".ts", ".tsx"],
+      "@typescript-eslint/parser": [".ts", ".d.ts"],
     },
-    "import/ignore": [
-      "node_modules",
-      "\\.(css|scss|sass|less|styl|svg|png|jpg|jpeg|gif|webp|ico|woff|woff2|ttf|eot)$",
-    ],
   },
   rules: {
     // Errores
-    "import/no-unresolved": "error",
+    "import/no-unresolved": ["error", { commonjs: true, caseSensitive: true }],
     "import/named": "error",
     "import/default": "error",
     "import/namespace": "error",
     "import/no-absolute-path": "error",
+    "import/no-dynamic-require": "warn",
     "import/no-self-import": "error",
+    // maxDepth debe ser número o Infinity (no string)
     "import/no-cycle": ["error", { maxDepth: Infinity, ignoreExternal: true }],
-    "import/no-useless-path-segments": "error",
+    "import/no-useless-path-segments": ["error", { commonjs: true }],
+
+    // Advertencias
     "import/export": "error",
     "import/no-named-as-default": "warn",
     "import/no-named-as-default-member": "warn",
     "import/no-deprecated": "warn",
     "import/no-mutable-exports": "warn",
-    // Estilo
+
+    // Estilo (opcional pero recomendado)
     "import/first": "error",
     "import/no-duplicates": "error",
     "import/order": [
@@ -144,58 +118,39 @@ config.push({
           "object",
           "type",
         ],
-        "newlines-between": "always",
+        "newlines-between": "never",
         alphabetize: { order: "asc", caseInsensitive: true },
       },
     ],
     "import/newline-after-import": "warn",
-    "import/no-anonymous-default-export": [
-      "warn",
-      {
-        allowArray: false,
-        allowArrowFunction: false,
-        allowAnonymousClass: false,
-        allowAnonymousFunction: false,
-        allowCallExpression: true,
-        allowLiteral: false,
-        allowObject: true,
-      },
-    ],
-    // Extensiones - Vite las maneja automáticamente
+    "import/no-anonymous-default-export": "warn",
+
+    // Extensiones - Para ES modules en Node.js SIEMPRE usar extensión .js
+    // Referencia: https://nodejs.org/api/esm.html#mandatory-file-extensions
     "import/extensions": [
-      "off", // Vite resuelve imports con o sin extensión
+      "error",
+      "always",
+      {
+        ignorePackages: true,
+      },
     ],
   },
 });
 
 // ============================================================================
-// JAVASCRIPT/JSX FILES
+// JAVASCRIPT FILES (.js, .mjs)
 // ============================================================================
 config.push({
-  files: ["src/**/*.{js,jsx}"],
+  files: ["**/*.js", "**/*.mjs"],
   languageOptions: {
     ecmaVersion: "latest",
     sourceType: "module",
-    parserOptions: {
-      ecmaFeatures: { jsx: true },
-    },
     globals: {
-      ...globals.browser,
+      ...globals.node,
       ...globals.es2021,
     },
   },
-  plugins: {
-    "react-hooks": pluginReactHooks,
-    "react-refresh": pluginReactRefresh,
-  },
   rules: {
-    // React Hooks
-    ...pluginReactHooks.configs.recommended.rules,
-    // React Refresh (Vite HMR)
-    "react-refresh/only-export-components": [
-      "warn",
-      { allowConstantExport: true },
-    ],
     // Variables
     "no-unused-vars": [
       "warn",
@@ -206,15 +161,15 @@ config.push({
         destructuredArrayIgnorePattern: "^_",
       },
     ],
-    "no-use-before-define": [
-      "error",
-      { functions: false, classes: true, variables: true },
-    ],
+    "no-use-before-define": ["error", { functions: false, classes: true }],
     "prefer-const": "warn",
     "no-var": "error",
+
     // Funciones
     "arrow-body-style": ["warn", "as-needed"],
     "prefer-arrow-callback": "warn",
+    "func-style": ["warn", "expression", { allowArrowFunctions: true }],
+
     // Objetos y Arrays
     "object-shorthand": ["warn", "always"],
     "prefer-destructuring": [
@@ -224,47 +179,54 @@ config.push({
     ],
     "prefer-template": "warn",
     "prefer-spread": "warn",
+
     // Async/Promises
     "no-async-promise-executor": "error",
     "require-await": "warn",
+    "no-return-await": "off", // Deprecated en favor de @typescript-eslint/return-await
     "prefer-promise-reject-errors": "error",
-    // Console
+
+    // Console y debugging
     "no-console": ["warn", { allow: ["warn", "error", "info"] }],
     "no-debugger": "warn",
+
     // Mejores prácticas
     eqeqeq: ["error", "always", { null: "ignore" }],
     "no-eval": "error",
     "no-implied-eval": "error",
+    "no-new-func": "error",
     "no-param-reassign": ["warn", { props: false }],
     "no-throw-literal": "error",
+    "prefer-regex-literals": "warn",
     radix: "error",
+    yoda: "warn",
+
+    // Node.js específico
+    "no-process-exit": "off", // Permitido en scripts
+    "callback-return": "off", // Deprecated
+    "handle-callback-err": "off", // Deprecated
   },
 });
 
 // ============================================================================
-// TYPESCRIPT FILES (.ts, .tsx)
+// TYPESCRIPT FILES (.ts, .d.ts)
 // ============================================================================
 config.push({
-  files: ["src/**/*.{ts,tsx}"],
+  files: ["**/*.ts", "**/*.d.ts"],
   languageOptions: {
     parser: typescriptParser,
     parserOptions: {
       ecmaVersion: "latest",
       sourceType: "module",
-      ecmaFeatures: { jsx: true },
-    },
-    globals: {
-      ...globals.browser,
-      ...globals.es2021,
+      // Si activas reglas que necesitan type info, añade `project: './tsconfig.json'`
+      // project: "./tsconfig.json",
     },
   },
   plugins: {
     "@typescript-eslint": typescriptPlugin,
-    "react-hooks": pluginReactHooks,
-    "react-refresh": pluginReactRefresh,
   },
   rules: {
-    // Desactivar reglas JS que entran en conflicto
+    // Desactivar reglas de JS que entran en conflicto con TS
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": [
       "warn",
@@ -279,21 +241,9 @@ config.push({
       "error",
       { functions: false, classes: true },
     ],
-    // TypeScript específico
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-explicit-any": "warn",
-    "@typescript-eslint/consistent-type-imports": [
-      "warn",
-      { prefer: "type-imports" },
-    ],
-    // React Hooks (también para TS)
-    ...pluginReactHooks.configs.recommended.rules,
-    // React Refresh
-    "react-refresh/only-export-components": [
-      "warn",
-      { allowConstantExport: true },
-    ],
   },
 });
 
@@ -301,16 +251,11 @@ config.push({
 // TEST FILES
 // ============================================================================
 config.push({
-  files: [
-    "src/**/*.test.{js,jsx,ts,tsx}",
-    "src/**/*.spec.{js,jsx,ts,tsx}",
-    "**/__tests__/**/*.{js,jsx,ts,tsx}",
-  ],
+  files: ["**/*.test.js", "**/*.spec.js", "tests/**/*.js"],
   languageOptions: {
     globals: {
-      ...globals.browser,
-      ...globals.jest,
       ...globals.node,
+      ...globals.es2021,
       describe: "readonly",
       it: "readonly",
       test: "readonly",
@@ -324,8 +269,8 @@ config.push({
   },
   rules: {
     "no-unused-expressions": "off",
+    "n/no-unpublished-import": "off",
     "import/no-extraneous-dependencies": "off",
-    "@typescript-eslint/no-explicit-any": "off",
   },
 });
 
@@ -336,15 +281,14 @@ config.push({
   files: [
     "*.config.js",
     "*.config.ts",
-    "vite.config.*",
-    "tailwind.config.*",
     "eslint.config.js",
     "prettier.config.js",
+    "**/*.d.ts",
   ],
   rules: {
+    "n/no-extraneous-import": "off", // Permite usar deps del root
+    "import/no-unresolved": "off",
     "import/no-anonymous-default-export": "off",
-    "import/no-unresolved": "off", // Los configs pueden importar devDependencies
-    "import/no-extraneous-dependencies": "off",
   },
 });
 
@@ -358,13 +302,14 @@ config.push(prettierConfig);
 // ============================================================================
 config.push({
   ignores: [
+    "node_modules/**",
     "dist/**",
     "build/**",
-    "node_modules/**",
-    "public/**",
     "coverage/**",
-    ".vite/**",
-    "*.min.js",
+    "logs/**",
+    "*.log",
+    ".env*",
+    "src/errors/theme.js",
   ],
 });
 
