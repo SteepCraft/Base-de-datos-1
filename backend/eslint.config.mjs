@@ -1,7 +1,7 @@
 // eslint.config.mjs
 import js from "@eslint/js";
 import globals from "globals";
-import nodePlugin from "eslint-plugin-node";
+import nodePlugin from "eslint-plugin-n";
 import prettierConfig from "eslint-config-prettier/flat";
 import importPlugin from "eslint-plugin-import";
 
@@ -9,11 +9,11 @@ const config = [];
 
 config.push(js.configs.recommended);
 
-// Plugin node
+// Plugin node (usando eslint-plugin-n)
 config.push({
-  plugins: { node: nodePlugin },
+  plugins: { n: nodePlugin },
   rules: {
-    "node/no-missing-import": "off",
+    "n/no-missing-import": "off",
   },
 });
 
