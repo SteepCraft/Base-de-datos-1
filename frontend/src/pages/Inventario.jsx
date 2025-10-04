@@ -5,9 +5,14 @@ import {
   FiPackage,
   FiAlertTriangle,
   FiCheckCircle,
+  FiDownload,
 } from "react-icons/fi";
 
 import api from "../config/api";
+import {
+  exportInventarioToCSV,
+  exportInventarioToPDF,
+} from "../utils/exportUtils";
 
 const Inventario = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -21,7 +26,7 @@ const Inventario = () => {
     },
   });
 
-  const { data: inventario } = useQuery({
+  const { data: _inventario } = useQuery({
     queryKey: ["inventario"],
     queryFn: async () => {
       const response = await api.get("/inventario");
@@ -145,6 +150,22 @@ const Inventario = () => {
         </div>
 
         <div className='flex gap-2'>
+          <button
+            onClick={() => exportInventarioToCSV(productos || [])}
+            className='inline-flex items-center px-4 py-2 text-sm font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100'
+            title='Exportar a CSV'
+          >
+            <FiDownload className='w-4 h-4 mr-2' />
+            CSV
+          </button>
+          <button
+            onClick={() => exportInventarioToPDF(productos || [])}
+            className='inline-flex items-center px-4 py-2 text-sm font-medium text-red-700 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100'
+            title='Exportar a PDF'
+          >
+            <FiDownload className='w-4 h-4 mr-2' />
+            PDF
+          </button>
           <button
             onClick={() => setFilterStock("all")}
             className={`px-4 py-2 rounded-lg ${

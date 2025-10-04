@@ -1,13 +1,27 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { FiPlus, FiEye, FiSearch, FiX, FiShoppingBag } from "react-icons/fi";
+import {
+  FiPlus,
+  FiEye,
+  FiSearch,
+  FiX,
+  FiShoppingBag,
+  FiDownload,
+} from "react-icons/fi";
 
+import PDFPreviewModal from "../components/PDFPreviewModal";
 import api from "../config/api";
+import { exportComprasToPDF, generateCompraPDF } from "../utils/exportUtils";
 
 const Compras = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [viewingCompra, setViewingCompra] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [pdfPreview, setPdfPreview] = useState({
+    isOpen: false,
+    doc: null,
+    filename: null,
+  });
   const queryClient = useQueryClient();
 
   const [formData, setFormData] = useState({
@@ -174,39 +188,52 @@ const Compras = () => {
   }
 
   return (
-    <div className='p-6'>
-      <div className='flex items-center justify-between mb-6'>
-        <div>
-          <h1 className='text-3xl font-bold text-gray-900'>
-            Compras a Proveedores
-          </h1>
-          <p className='mt-1 text-sm text-gray-500'>
-            Gestiona las compras de productos a proveedores
-          </p>
-        </div>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className='flex items-center px-4 py-2 text-white bg-green-600 rounded-lg hover:bg-green-700'
-        >
-          <FiPlus className='mr-2' />
-          Nueva Compra
-        </button>
+    <div className='px-4 py-6 sm:px-6 lg:px-8'>
+      {/* Header */}
+      <div className='mb-8'>
+        <h1 className='text-3xl font-bold text-gray-900'>
+          Compras a Proveedores
+        </h1>
+        <p className='mt-2 text-sm text-gray-600'>
+          Gestiona las compras de productos a proveedores
+        </p>
       </div>
 
-      {/* Búsqueda */}
-      <div className='relative mb-6'>
-        <FiSearch className='absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2' />
-        <input
-          type='text'
-          placeholder='Buscar compra por código o proveedor...'
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className='w-full py-2 pl-10 pr-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent'
-        />
+      {/* Acciones */}
+      <div className='flex flex-col justify-between gap-4 mb-6 sm:flex-row'>
+        <div className='relative flex-1 max-w-md'>
+          <div className='absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none'>
+            <FiSearch className='w-5 h-5 text-gray-400' />
+          </div>
+          <input
+            type='text'
+            placeholder='Buscar compras...'
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className='block w-full py-2 pl-10 pr-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent'
+          />
+        </div>
+        <div className='flex gap-2'>
+          <button
+            onClick={() => exportComprasToPDF(compras || [], proveedores || [])}
+            className='inline-flex items-center px-4 py-2 text-sm font-medium text-red-700 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100'
+            title='Exportar a PDF'
+          >
+            <FiDownload className='w-4 h-4 mr-2' />
+            PDF
+          </button>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className='inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-lg shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
+          >
+            <FiPlus className='w-5 h-5 mr-2' />
+            Nueva Compra
+          </button>
+        </div>
       </div>
 
       {/* Tabla */}
-      <div className='overflow-hidden bg-white rounded-lg shadow'>
+      <div className='overflow-hidden bg-white rounded-lg shadow-sm'>
         <table className='min-w-full divide-y divide-gray-200'>
           <thead className='bg-gray-50'>
             <tr>
@@ -263,6 +290,7 @@ const Compras = () => {
                     <button
                       onClick={() => setViewingCompra(compra)}
                       className='text-green-600 hover:text-green-900'
+                      title='Ver detalles'
                     >
                       <FiEye className='w-5 h-5' />
                     </button>
@@ -635,7 +663,25 @@ const Compras = () => {
                 </div>
               </div>
 
-              <div className='px-4 py-3 bg-gray-50 sm:px-6 sm:flex sm:flex-row-reverse'>
+              <div className='px-4 py-3 bg-gray-50 sm:px-6 sm:flex sm:flex-row-reverse gap-2'>
+                <button
+                  onClick={() => {
+                    const proveedor = proveedores?.find(
+                      (p) => p.id === viewingCompra.id_proveedor
+                    );
+                    const { doc, filename } = generateCompraPDF(
+                      viewingCompra,
+                      proveedor,
+                      productos || []
+                    );
+                    setPdfPreview({ isOpen: true, doc, filename });
+                    setViewingCompra(null); // Cerrar el modal de detalles
+                  }}
+                  className='inline-flex items-center justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-lg shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:w-auto sm:text-sm'
+                >
+                  <FiDownload className='w-4 h-4 mr-2' />
+                  Exportar PDF
+                </button>
                 <button
                   onClick={() => setViewingCompra(null)}
                   className='inline-flex justify-center w-full px-4 py-2 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:w-auto sm:text-sm'
@@ -647,6 +693,16 @@ const Compras = () => {
           </div>
         </div>
       )}
+
+      {/* PDF Preview Modal */}
+      <PDFPreviewModal
+        isOpen={pdfPreview.isOpen}
+        onClose={() =>
+          setPdfPreview({ isOpen: false, doc: null, filename: null })
+        }
+        pdfDoc={pdfPreview.doc}
+        filename={pdfPreview.filename}
+      />
     </div>
   );
 };

@@ -1,13 +1,27 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { FiPlus, FiEye, FiSearch, FiX, FiShoppingCart } from "react-icons/fi";
+import {
+  FiPlus,
+  FiEye,
+  FiSearch,
+  FiX,
+  FiShoppingCart,
+  FiDownload,
+} from "react-icons/fi";
 
+import PDFPreviewModal from "../components/PDFPreviewModal";
 import api from "../config/api";
+import { exportVentasToPDF, generateVentaPDF } from "../utils/exportUtils";
 
 const Ventas = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [viewingVenta, setViewingVenta] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [pdfPreview, setPdfPreview] = useState({
+    isOpen: false,
+    doc: null,
+    filename: null,
+  });
   const queryClient = useQueryClient();
 
   const [formData, setFormData] = useState({
@@ -224,13 +238,23 @@ const Ventas = () => {
             className='block w-full py-2 pl-10 pr-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
           />
         </div>
-        <button
-          onClick={openModal}
-          className='inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
-        >
-          <FiPlus className='w-5 h-5 mr-2' />
-          Nueva Venta
-        </button>
+        <div className='flex gap-2'>
+          <button
+            onClick={() => exportVentasToPDF(ventas || [], clientes || [])}
+            className='inline-flex items-center px-4 py-2 text-sm font-medium text-red-700 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100'
+            title='Exportar a PDF'
+          >
+            <FiDownload className='w-4 h-4 mr-2' />
+            PDF
+          </button>
+          <button
+            onClick={openModal}
+            className='inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
+          >
+            <FiPlus className='w-5 h-5 mr-2' />
+            Nueva Venta
+          </button>
+        </div>
       </div>
 
       {/* Tabla */}
@@ -294,6 +318,7 @@ const Ventas = () => {
                       <button
                         onClick={() => viewDetails(venta)}
                         className='text-blue-600 hover:text-blue-900'
+                        title='Ver detalles'
                       >
                         <FiEye className='w-5 h-5' />
                       </button>
@@ -652,7 +677,25 @@ const Ventas = () => {
                 </div>
               </div>
 
-              <div className='px-4 py-3 bg-gray-50 sm:px-6 sm:flex sm:flex-row-reverse'>
+              <div className='px-4 py-3 bg-gray-50 sm:px-6 sm:flex sm:flex-row-reverse gap-2'>
+                <button
+                  onClick={() => {
+                    const cliente = clientes?.find(
+                      (c) => c.id === viewingVenta.id_cliente
+                    );
+                    const { doc, filename } = generateVentaPDF(
+                      viewingVenta,
+                      cliente,
+                      productos || []
+                    );
+                    setPdfPreview({ isOpen: true, doc, filename });
+                    setViewingVenta(null); // Cerrar el modal de detalles
+                  }}
+                  className='inline-flex items-center justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-lg shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:w-auto sm:text-sm'
+                >
+                  <FiDownload className='w-4 h-4 mr-2' />
+                  Exportar PDF
+                </button>
                 <button
                   onClick={() => setViewingVenta(null)}
                   className='inline-flex justify-center w-full px-4 py-2 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:w-auto sm:text-sm'
@@ -664,6 +707,16 @@ const Ventas = () => {
           </div>
         </div>
       )}
+
+      {/* PDF Preview Modal */}
+      <PDFPreviewModal
+        isOpen={pdfPreview.isOpen}
+        onClose={() =>
+          setPdfPreview({ isOpen: false, doc: null, filename: null })
+        }
+        pdfDoc={pdfPreview.doc}
+        filename={pdfPreview.filename}
+      />
     </div>
   );
 };

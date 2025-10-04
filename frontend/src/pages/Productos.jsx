@@ -1,8 +1,16 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiX } from "react-icons/fi";
+import {
+  FiPlus,
+  FiEdit2,
+  FiTrash2,
+  FiSearch,
+  FiX,
+  FiDownload,
+} from "react-icons/fi";
 
 import api from "../config/api";
+import { exportProductosToCSV } from "../utils/exportUtils";
 
 const Productos = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -132,13 +140,23 @@ const Productos = () => {
             className='block w-full py-2 pl-10 pr-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
           />
         </div>
-        <button
-          onClick={() => openModal()}
-          className='inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
-        >
-          <FiPlus className='w-5 h-5 mr-2' />
-          Nuevo Producto
-        </button>
+        <div className='flex gap-2'>
+          <button
+            onClick={() => exportProductosToCSV(productos || [])}
+            className='inline-flex items-center px-4 py-2 text-sm font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100'
+            title='Exportar a CSV'
+          >
+            <FiDownload className='w-4 h-4 mr-2' />
+            CSV
+          </button>
+          <button
+            onClick={() => openModal()}
+            className='inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
+          >
+            <FiPlus className='w-5 h-5 mr-2' />
+            Nuevo Producto
+          </button>
+        </div>
       </div>
 
       {/* Tabla */}
