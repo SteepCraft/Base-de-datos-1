@@ -5,16 +5,16 @@ const router = Router();
 
 router.get("/", DetalleCompraController.getAllDetalleCompra);
 router.get(
-  "/:codi_compra/:codi_producto",
+  "/:codigo_compra/:codigo_producto",
   DetalleCompraController.getDetalleCompraById
 );
 router.post("/", DetalleCompraController.createDetalleCompra);
 router.put(
-  "/:codi_compra/:codi_producto",
+  "/:codigo_compra/:codigo_producto",
   DetalleCompraController.updateDetalleCompra
 );
 router.delete(
-  "/:codi_compra/:codi_producto",
+  "/:codigo_compra/:codigo_producto",
   DetalleCompraController.deleteDetalleCompra
 );
 

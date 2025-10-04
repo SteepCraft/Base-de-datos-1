@@ -5,16 +5,16 @@ const router = Router();
 
 router.get("/", SuministrosController.getAllSuministros);
 router.get(
-  "/:id_proveedor/:codi_producto",
+  "/:id_proveedor/:codigo_producto",
   SuministrosController.getSuministroById
 );
 router.post("/", SuministrosController.createSuministro);
 router.put(
-  "/:id_proveedor/:codi_producto",
+  "/:id_proveedor/:codigo_producto",
   SuministrosController.updateSuministro
 );
 router.delete(
-  "/:id_proveedor/:codi_producto",
+  "/:id_proveedor/:codigo_producto",
   SuministrosController.deleteSuministro
 );
 

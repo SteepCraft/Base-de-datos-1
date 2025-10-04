@@ -32,7 +32,7 @@ class InventarioController {
   static async updateInventario(req, res) {
     try {
       const [updated] = await models.Inventario.update(req.body, {
-        where: { codi_producto: req.params.id },
+        where: { codigo_producto: req.params.id },
       });
       if (!updated)
         return res.status(404).json({ error: "Item no encontrado" });
@@ -46,7 +46,7 @@ class InventarioController {
   static async deleteInventario(req, res) {
     try {
       const deleted = await models.Inventario.destroy({
-        where: { codi_producto: req.params.id },
+        where: { codigo_producto: req.params.id },
       });
       if (!deleted)
         return res.status(404).json({ error: "Item no encontrado" });

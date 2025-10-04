@@ -14,8 +14,8 @@ class DetalleVentaController {
     try {
       const detalle = await models.DetalleVenta.findOne({
         where: {
-          codi_venta: req.params.codi_venta,
-          codi_producto: req.params.codi_producto,
+          venta_codigo: req.params.venta_codigo,
+          codigo_producto: req.params.codigo_producto,
         },
       });
       if (!detalle)
@@ -39,16 +39,16 @@ class DetalleVentaController {
     try {
       const [updated] = await models.DetalleVenta.update(req.body, {
         where: {
-          codi_venta: req.params.codi_venta,
-          codi_producto: req.params.codi_producto,
+          venta_codigo: req.params.venta_codigo,
+          codigo_producto: req.params.codigo_producto,
         },
       });
       if (!updated)
         return res.status(404).json({ error: "Detalle no encontrado" });
       const detalle = await models.DetalleVenta.findOne({
         where: {
-          codi_venta: req.params.codi_venta,
-          codi_producto: req.params.codi_producto,
+          venta_codigo: req.params.venta_codigo,
+          codigo_producto: req.params.codigo_producto,
         },
       });
       res.json(detalle);
@@ -61,8 +61,8 @@ class DetalleVentaController {
     try {
       const deleted = await models.DetalleVenta.destroy({
         where: {
-          codi_venta: req.params.codi_venta,
-          codi_producto: req.params.codi_producto,
+          venta_codigo: req.params.venta_codigo,
+          codigo_producto: req.params.codigo_producto,
         },
       });
       if (!deleted)

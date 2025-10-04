@@ -15,7 +15,7 @@ class SuministrosController {
       const suministro = await models.Suministros.findOne({
         where: {
           id_proveedor: req.params.id_proveedor,
-          codi_producto: req.params.codi_producto,
+          codigo_producto: req.params.codigo_producto,
         },
       });
       if (!suministro)
@@ -40,7 +40,7 @@ class SuministrosController {
       const [updated] = await models.Suministros.update(req.body, {
         where: {
           id_proveedor: req.params.id_proveedor,
-          codi_producto: req.params.codi_producto,
+          codigo_producto: req.params.codigo_producto,
         },
       });
       if (!updated)
@@ -48,7 +48,7 @@ class SuministrosController {
       const suministro = await models.Suministros.findOne({
         where: {
           id_proveedor: req.params.id_proveedor,
-          codi_producto: req.params.codi_producto,
+          codigo_producto: req.params.codigo_producto,
         },
       });
       res.json(suministro);
@@ -62,7 +62,7 @@ class SuministrosController {
       const deleted = await models.Suministros.destroy({
         where: {
           id_proveedor: req.params.id_proveedor,
-          codi_producto: req.params.codi_producto,
+          codigo_producto: req.params.codigo_producto,
         },
       });
       if (!deleted)

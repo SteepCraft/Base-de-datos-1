@@ -14,8 +14,8 @@ class DetalleCompraController {
     try {
       const detalle = await models.DetalleCompra.findOne({
         where: {
-          codi_compra: req.params.codi_compra,
-          codi_producto: req.params.codi_producto,
+          codigo_compra: req.params.codigo_compra,
+          codigo_producto: req.params.codigo_producto,
         },
       });
       if (!detalle)
@@ -39,16 +39,16 @@ class DetalleCompraController {
     try {
       const [updated] = await models.DetalleCompra.update(req.body, {
         where: {
-          codi_compra: req.params.codi_compra,
-          codi_producto: req.params.codi_producto,
+          codigo_compra: req.params.codigo_compra,
+          codigo_producto: req.params.codigo_producto,
         },
       });
       if (!updated)
         return res.status(404).json({ error: "Detalle no encontrado" });
       const detalle = await models.DetalleCompra.findOne({
         where: {
-          codi_compra: req.params.codi_compra,
-          codi_producto: req.params.codi_producto,
+          codigo_compra: req.params.codigo_compra,
+          codigo_producto: req.params.codigo_producto,
         },
       });
       res.json(detalle);
@@ -61,8 +61,8 @@ class DetalleCompraController {
     try {
       const deleted = await models.DetalleCompra.destroy({
         where: {
-          codi_compra: req.params.codi_compra,
-          codi_producto: req.params.codi_producto,
+          codigo_compra: req.params.codigo_compra,
+          codigo_producto: req.params.codigo_producto,
         },
       });
       if (!deleted)
