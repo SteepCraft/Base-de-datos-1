@@ -3,7 +3,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
 import { rateLimit } from "express-rate-limit";
-import { authenticate, authorizeAdmin } from "./src/auth/auth.middleware.js";
+import { authenticate } from "./src/auth/auth.middleware.js";
 import authRoutes from "./src/auth/auth.routes.js";
 import { sequelize } from "./src/config/sequelize.js";
 import applyAssociations from "./src/models/associations.js";
