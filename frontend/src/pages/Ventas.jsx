@@ -88,11 +88,7 @@ const Ventas = () => {
   };
 
   const handleAddProduct = () => {
-    if (
-      !productToAdd.codigo_producto ||
-      !productToAdd.cant_venta ||
-      !productToAdd.precio_producto
-    ) {
+    if (!productToAdd.codigo_producto || !productToAdd.cant_venta) {
       alert("Complete todos los campos del producto");
       return;
     }
@@ -105,12 +101,22 @@ const Ventas = () => {
       return;
     }
 
+    // Usar el precio del producto si no se especificó otro
+    const precioFinal = productToAdd.precio_producto || producto.precio;
+
+    if (!precioFinal || precioFinal <= 0) {
+      alert("El producto debe tener un precio válido");
+      return;
+    }
+
     setFormData({
       ...formData,
       productos: [
         ...formData.productos,
         {
-          ...productToAdd,
+          codigo_producto: productToAdd.codigo_producto,
+          cant_venta: parseInt(productToAdd.cant_venta, 10),
+          precio_producto: parseFloat(precioFinal),
           descripcion: producto.descripcion,
         },
       ],
@@ -299,7 +305,7 @@ const Ventas = () => {
               &#8203;
             </span>
 
-            <div className='inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full relative z-10'>
+            <div className='relative z-10 inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full'>
               <form onSubmit={handleSubmit}>
                 <div className='px-4 pt-5 pb-4 bg-white sm:p-6 sm:pb-4'>
                   <div className='flex items-center justify-between mb-4'>
@@ -534,7 +540,7 @@ const Ventas = () => {
               &#8203;
             </span>
 
-            <div className='inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full relative z-10'>
+            <div className='relative z-10 inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full'>
               <div className='px-4 pt-5 pb-4 bg-white sm:p-6 sm:pb-4'>
                 <div className='flex items-center justify-between mb-4'>
                   <h3 className='text-lg font-medium text-gray-900'>

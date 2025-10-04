@@ -85,11 +85,7 @@ const Compras = () => {
   };
 
   const addProductToCompra = () => {
-    if (
-      !productToAdd.codigo_producto ||
-      !productToAdd.cant_compra ||
-      !productToAdd.precio_producto
-    ) {
+    if (!productToAdd.codigo_producto || !productToAdd.cant_compra) {
       alert("Complete todos los campos del producto");
       return;
     }
@@ -103,6 +99,14 @@ const Compras = () => {
       return;
     }
 
+    // Usar el precio del producto si no se especificó otro
+    const precioFinal = productToAdd.precio_producto || producto.precio;
+
+    if (!precioFinal || precioFinal <= 0) {
+      alert("El producto debe tener un precio válido");
+      return;
+    }
+
     setFormData({
       ...formData,
       productos: [
@@ -110,7 +114,7 @@ const Compras = () => {
         {
           codigo_producto: Number.parseInt(productToAdd.codigo_producto, 10),
           cant_compra: Number.parseInt(productToAdd.cant_compra, 10),
-          precio_producto: Number.parseFloat(productToAdd.precio_producto),
+          precio_producto: Number.parseFloat(precioFinal),
           nombre_producto: producto.descripcion,
         },
       ],
@@ -336,12 +340,16 @@ const Compras = () => {
                       <div className='grid grid-cols-4 gap-2'>
                         <select
                           value={productToAdd.codigo_producto}
-                          onChange={(e) =>
+                          onChange={(e) => {
+                            const producto = productos?.find(
+                              (p) => p.codigo === Number.parseInt(e.target.value, 10)
+                            );
                             setProductToAdd({
                               ...productToAdd,
                               codigo_producto: e.target.value,
-                            })
-                          }
+                              precio_producto: producto?.precio || "",
+                            });
+                          }}
                           className='block w-full px-3 py-2 text-sm border border-gray-300 rounded-lg'
                         >
                           <option value=''>Seleccionar producto</option>
