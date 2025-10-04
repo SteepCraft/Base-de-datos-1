@@ -10,11 +10,9 @@ Esta guía explica cómo levantar una base de datos Oracle XE en Docker usando *
 
 ## 1. Crear archivo `docker-compose.yml`
 
-En tu proyecto crea un archivo llamado `docker-compose.yml` con el siguiente contenido:
+En la carpeta `backend/` existe un archivo `docker-compose.yml` con el siguiente contenido:
 
 ```yaml
-version: "3.8"
-
 services:
   oracle-xe:
     image: gvenzl/oracle-xe:21.3.0-slim
@@ -25,7 +23,6 @@ services:
       ORACLE_PASSWORD: "123"
     volumes:
       - oracle-data:/opt/oracle/oradata
-      - ./init.sql:/container-entrypoint-initdb.d/init.sql
 
 volumes:
   oracle-data:
@@ -33,31 +30,33 @@ volumes:
 
 ---
 
-## 2. Script de inicialización (`init.sql`)
+## 2. Levantar el contenedor
 
-En la misma carpeta que `docker-compose.yml`, crea un archivo llamado `init.sql` con el contenido:
+Desde la carpeta `backend/`, ejecuta:
 
-```sql
-ALTER SESSION SET "_ORACLE_SCRIPT"=true;
-
-CREATE USER sanaya IDENTIFIED BY 123;
-GRANT CONNECT, RESOURCE, DBA TO sanaya;
-ALTER USER sanaya DEFAULT TABLESPACE USERS;
+```bash
+cd backend
+sudo docker compose up -d
 ```
 
-Esto asegura que el usuario `sanaya` se cree automáticamente al levantar el contenedor.
+Esto creará y levantará el contenedor con Oracle XE. El proceso de inicialización puede tardar 1-2 minutos.
 
 ---
 
-## 3. Levantar el contenedor
+## 3. Configurar usuario y base de datos automáticamente
 
-Ejecuta:
+Ejecuta el script de configuración automatizado:
 
 ```bash
-docker-compose up -d
+./setup-user.sh
 ```
 
-Esto creará y levantará el contenedor con Oracle XE.
+Este script:
+- ✅ Espera automáticamente a que Oracle esté listo
+- ✅ Crea el usuario `SANAYA` con todos los permisos necesarios
+- ✅ Copia y ejecuta el archivo `sanaya.sql` para crear todas las tablas
+
+**Nota:** Si necesitas recrear el esquema en el futuro, simplemente ejecuta `./setup-user.sh` de nuevo.
 
 ---
 
@@ -67,7 +66,7 @@ Esto creará y levantará el contenedor con Oracle XE.
 
 1. Dentro del contenedor con SQLPlus:
 ```bash
-docker exec -it oracle-xe sqlplus system/123@localhost/XEPDB1
+sudo docker exec -it oracle-xe sqlplus system/123@localhost/XEPDB1
 ```
 
 2. Desde tu máquina (si tienes SQLPlus instalado):
@@ -82,28 +81,21 @@ sqlplus system/123@localhost:1521/XEPDB1
 - **Contraseña:** 123  
 - **Service:** XEPDB1  
 
-### Conexión como `sanaya`
+### Conexión como `SANAYA` (usuario de trabajo)
 
 - **Host:** localhost  
 - **Puerto:** 1521  
-- **Usuario:** sanaya  
+- **Usuario:** SANAYA  
 - **Contraseña:** 123  
 - **Service:** XEPDB1  
 
----
-
-## 5. Cargar el esquema
-
-Copia tu archivo SQL al contenedor y ejecútalo:
-
 ```bash
-docker cp ../backend/sanaya.sql oracle-xe:/tmp/sanaya.sql
-docker exec -it oracle-xe sqlplus sanaya/123@localhost/XEPDB1 @/tmp/sanaya.sql
+sudo docker exec -it oracle-xe sqlplus SANAYA/123@localhost:1521/XEPDB1
 ```
 
 ---
 
-## 6. Configurar variables de entorno en el backend
+## 5. Configurar variables de entorno en el backend
 
 En la carpeta `backend/` copia el archivo `.env.example` como `.env`:
 
@@ -114,7 +106,7 @@ cp .env.example .env
 Asegúrate de que contenga:
 
 ```
-ORACLE_USER=sanaya
+ORACLE_USER=SANAYA
 ORACLE_PASS=123
 ORACLE_HOST=localhost
 ORACLE_PORT=1521
@@ -123,46 +115,93 @@ ORACLE_DB=XEPDB1
 
 ---
 
-## 7. Verificar tablas
+## 6. Verificar tablas
 
-Conéctate como `sanaya` y ejecuta:
+Conéctate como `SANAYA` y ejecuta:
 
-```sql
-SELECT table_name FROM user_tables;
+```bash
+sudo docker exec -i oracle-xe sqlplus -s SANAYA/123@localhost:1521/XEPDB1 <<< "SELECT table_name FROM user_tables ORDER BY table_name;"
+```
+
+Deberías ver las tablas: `CLIENTE`, `COMPRAS`, `DETALLE_COMPRA`, `DETALLE_VENTA`, `INVENTARIO`, `PRODUCTO`, `PROVEEDOR`, `SUMINISTROS`, `USUARIO`, `VENTAS`.
+
+---
+
+## 7. Comandos útiles
+
+### Ver logs de Oracle
+```bash
+sudo docker compose logs -f oracle-xe
+```
+
+### Reiniciar Oracle
+```bash
+sudo docker compose restart oracle-xe
+```
+
+### Recrear el esquema (sin perder el contenedor)
+```bash
+./setup-user.sh
+```
+
+### Resetear completamente Oracle (⚠️ Borra todos los datos)
+```bash
+sudo docker compose down -v
+sudo docker compose up -d
+./setup-user.sh
 ```
 
 ---
 
 ## 8. Posibles problemas y soluciones
 
-### ❌ Error `ORA-01920: user name 'SANAYA' conflicts with another user`
-👉 Ya existe el usuario. Solución:  
-```sql
-DROP USER sanaya CASCADE;
-```
+### ❌ Error `ORA-12541: TNS:no listener`
+👉 Oracle aún no está completamente listo. Solución:  
+- Espera 1-2 minutos y vuelve a ejecutar `./setup-user.sh`
+- El script ahora espera automáticamente
 
-### ❌ Error `ORA-65040: operation not allowed from within a pluggable database`
-👉 No se activó el modo script. Solución:  
-```sql
-ALTER SESSION SET "_ORACLE_SCRIPT"=true;
+### ❌ Error al ejecutar `setup-user.sh`
+👉 Verifica que el contenedor esté corriendo:
+```bash
+sudo docker compose ps
 ```
-
-### ❌ Error `ORA-65066: The specified changes must apply to all containers`
-👉 Intentaste modificar el usuario en el contenedor equivocado. Asegúrate de estar conectado a `XEPDB1` y no a `CDB$ROOT`.
 
 ### ❌ Conflicto de nombre de contenedor
 👉 Otro contenedor usa el nombre `oracle-xe`. Solución:  
 ```bash
-docker rm -f oracle-xe
+sudo docker rm -f oracle-xe
+```
+
+### ❌ El script no tiene permisos de ejecución
+👉 Solución:
+```bash
+chmod +x setup-user.sh
 ```
 
 ### ❌ Persisten errores aunque elimines el contenedor
 👉 Probablemente el volumen guardó datos antiguos. Solución:  
 ```bash
-docker-compose down -v
-docker-compose up -d
+sudo docker compose down -v
+sudo docker compose up -d
+./setup-user.sh
 ```
 
 ---
 
-✅ Ahora tienes un entorno de Oracle XE listo con **docker-compose**, usuario inicial creado automáticamente y las soluciones a los errores más comunes.
+## 🚀 Inicio Rápido (Resumen)
+
+```bash
+# 1. Levantar Oracle
+cd backend
+sudo docker compose up -d
+
+# 2. Configurar usuario y esquema (espera automáticamente a que Oracle esté listo)
+./setup-user.sh
+
+# 3. ¡Listo! Ahora puedes conectarte
+sudo docker exec -it oracle-xe sqlplus SANAYA/123@localhost:1521/XEPDB1
+```
+
+---
+
+✅ Ahora tienes un entorno de Oracle XE completamente automatizado con el script `setup-user.sh`.

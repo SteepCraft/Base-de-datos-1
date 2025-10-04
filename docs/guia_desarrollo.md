@@ -16,7 +16,15 @@ cd bd1
 
 ## 2. Inicializar la base de datos Oracle
 
-Sigue las instrucciones en `docs/INICIALIZAR_ORACLE_DOCKER.md` para levantar Oracle XE y crear el usuario/esquema.
+```bash
+cd backend
+sudo docker compose up -d
+./setup-user.sh
+```
+
+Esto levantará Oracle XE y configurará automáticamente el usuario y el esquema.
+
+Para más detalles, consulta `docs/oracle_init.md`.
 
 ## 3. Backend
 
@@ -26,11 +34,17 @@ pnpm install # o npm install
 ```
 
 ### Variables de entorno
-Crea un archivo `.env` en `backend/` con los datos de conexión a Oracle:
+Copia el archivo `.env.example` como `.env` en `backend/`:
+
+```bash
+cp .env.example .env
+```
+
+Asegúrate de que contenga:
 
 ```
-ORACLE_USER=sanaya
-ORACLE_PASSWORD=sanaya
+ORACLE_USER=SANAYA
+ORACLE_PASSWORD=123
 ORACLE_HOST=localhost
 ORACLE_PORT=1521
 ORACLE_DB=XEPDB1
