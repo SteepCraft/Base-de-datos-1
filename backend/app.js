@@ -22,6 +22,11 @@ console.info("✅ Configuración completa cargada correctamente");
 
 const app = express();
 
+const corsWhitelist = (process.env.FRONTEND_URL || "")
+  .split(",")
+  .map((url) => url.trim())
+  .filter((url) => url.length > 0);
+
 /**
  * Inicialización de Sequelize y modelos (idempotente).
  * - Aplica asociaciones solo si no se han aplicado antes.
@@ -85,7 +90,7 @@ const app = express();
 
 // CORS - Permitir peticiones desde el frontend
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || "http://localhost:5173",
+  origin: corsWhitelist,
   credentials: true, // Permitir cookies
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
