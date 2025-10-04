@@ -90,8 +90,26 @@ const Compras = () => {
       return;
     }
 
+    // DEBUG: Ver qué valores tenemos
+    console.info(
+      "🔍 DEBUG - productToAdd.codigo_producto:",
+      productToAdd.codigo_producto,
+      typeof productToAdd.codigo_producto
+    );
+    console.info("🔍 DEBUG - productos:", productos);
+    if (productos && productos.length > 0) {
+      console.info(
+        "🔍 DEBUG - primer producto.codigo:",
+        productos[0].codigo,
+        typeof productos[0].codigo
+      );
+    }
+
+    const codigoNumero = Number.parseInt(productToAdd.codigo_producto, 10);
     const producto = productos?.find(
-      (p) => p.codigo === Number.parseInt(productToAdd.codigo_producto, 10)
+      (p) =>
+        p.codigo === codigoNumero ||
+        String(p.codigo) === productToAdd.codigo_producto
     );
 
     if (!producto) {
@@ -342,7 +360,8 @@ const Compras = () => {
                           value={productToAdd.codigo_producto}
                           onChange={(e) => {
                             const producto = productos?.find(
-                              (p) => p.codigo === Number.parseInt(e.target.value, 10)
+                              (p) =>
+                                p.codigo === Number.parseInt(e.target.value, 10)
                             );
                             setProductToAdd({
                               ...productToAdd,

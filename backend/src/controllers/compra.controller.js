@@ -102,8 +102,8 @@ class CompraController {
           {
             codigo_compra: codigo,
             codigo_producto: item.codigo_producto,
-            cant_compra: item.cant_compra,
-            precio_producto: item.precio_producto,
+            cant_compras: item.cant_compra,
+            precio_unit: item.precio_producto,
           },
           { transaction }
         );
