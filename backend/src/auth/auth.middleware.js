@@ -1,12 +1,11 @@
-// src/middlewares/auth.middleware.js
-import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
 
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const { JWT_SECRET } = process.env;
 
-export function authenticate(req, res, next) {
+export const authenticate = (req, res, next) => {
   try {
     // 1) tomar token de cookie
     let token = req.cookies?.access_token;
@@ -39,11 +38,11 @@ export function authenticate(req, res, next) {
     console.error("authenticate middleware error:", err);
     return res.status(500).json({ error: "Error interno de autenticación" });
   }
-}
+};
 
-export function authorizeAdmin(req, res, next) {
+export const authorizeAdmin = (req, res, next) => {
   if (req.user?.id !== 1) {
     return res.status(403).json({ error: "Acceso denegado" });
   }
   next();
-}
+};

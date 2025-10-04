@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
       const response = await api.get("/auth/me");
       setUser(response.data.user);
       localStorage.setItem("user", JSON.stringify(response.data.user));
-    } catch (error) {
+    } catch (_error) {
       // Si falla, no hay sesión válida
       setUser(null);
       localStorage.removeItem("user");

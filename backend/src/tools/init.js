@@ -15,7 +15,7 @@ const DEFAULT_ADMIN = {
  * @async
  * @throws {Error} Si falla la operación de base de datos o el hasheo.
  */
-async function initializeAdminUser() {
+const initializeAdminUser = async () => {
   // Ahora que 'models' es el objeto importado, lo desestructuramos.
   const { Usuario } = models;
 
@@ -45,9 +45,9 @@ async function initializeAdminUser() {
         nombres: DEFAULT_ADMIN.nombres,
         apellidos: DEFAULT_ADMIN.apellidos,
       });
-      console.log("✅ Usuario administrador creado con éxito.");
+      console.info("✅ Usuario administrador creado con éxito.");
     } else {
-      console.log("ℹ️ Usuario administrador ya existe.");
+      console.info("ℹ️ Usuario administrador ya existe.");
     }
   } catch (error) {
     console.error("❌ Error al crear el usuario administrador:", error.message);
@@ -63,33 +63,33 @@ async function initializeAdminUser() {
 
     throw error; // Relanzar para ser capturado por la función init
   }
-}
+};
 
 /**
  * Función principal asíncrona para iniciar todas las tareas de configuración.
  */
-async function init() {
-  console.log("========================================");
-  console.log("  INICIO: CONFIGURACIÓN INICIAL Y ADMIN ");
-  console.log("========================================");
+const init = async () => {
+  console.info("========================================");
+  console.info("  INICIO: CONFIGURACIÓN INICIAL Y ADMIN ");
+  console.info("========================================");
 
   try {
     // 1. Autenticar la conexión (verifica credenciales)
     await sequelize.authenticate();
-    console.log("✅ Conexión a la base de datos establecida.");
+    console.info("✅ Conexión a la base de datos establecida.");
 
     // 2. Sincronizar modelos (crea/actualiza tablas si no existen)
-    console.log("⏳ Sincronizando modelos con la base de datos...");
+    console.info("⏳ Sincronizando modelos con la base de datos...");
     await sequelize.sync();
-    console.log("✅ Modelos sincronizados correctamente.");
+    console.info("✅ Modelos sincronizados correctamente.");
 
     // 3. Inicializar el usuario administrador por defecto
-    console.log("⏳ Verificando/creando usuario administrador...");
+    console.info("⏳ Verificando/creando usuario administrador...");
     await initializeAdminUser();
 
-    console.log("========================================");
-    console.log(" ✅ PROCESO DE INICIALIZACIÓN COMPLETADO ");
-    console.log("========================================");
+    console.info("========================================");
+    console.info(" ✅ PROCESO DE INICIALIZACIÓN COMPLETADO ");
+    console.info("========================================");
 
     // Finaliza el proceso correctamente
     process.exit(0);
@@ -97,7 +97,7 @@ async function init() {
     console.error("❌ ERROR CRÍTICO DURANTE LA INICIALIZACIÓN:", error.message);
     process.exit(1);
   }
-}
+};
 
 // Ejecutar la función principal.
 init();

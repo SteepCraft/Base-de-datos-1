@@ -11,31 +11,31 @@ const ALLOWED_FIELDS = [
 ];
 
 // convierte valores entrantes a 1/0 (DB)
-function parseEstadoToDb(value) {
+const parseEstadoToDb = (value) => {
   if (value === undefined || value === null) return undefined;
   if (typeof value === "boolean") return value ? 1 : 0;
   if (typeof value === "number") return value ? 1 : 0;
   const v = String(value).toLowerCase().trim();
   if (["1", "true", "y", "yes", "activo", "active"].includes(v)) return 1;
   return 0;
-}
+};
 
 // convierte 1/0 (DB) a booleano para la API
-function formatEstadoFromDb(value) {
+const formatEstadoFromDb = (value) => {
   if (value === undefined || value === null) return null;
   if (typeof value === "number") return value === 1;
   const v = String(value).trim();
   return v === "1" || v.toLowerCase() === "y" || v.toLowerCase() === "true";
-}
+};
 
 // limpia un objeto usuario (instancia o plain) -> quita contrasena y normaliza estado
-function sanitizeUsuario(obj) {
+const sanitizeUsuario = (obj) => {
   if (!obj) return obj;
   const plain = typeof obj.toJSON === "function" ? obj.toJSON() : { ...obj };
   if ("contrasena" in plain) delete plain.contrasena;
   if ("estado" in plain) plain.estado = formatEstadoFromDb(plain.estado);
   return plain;
-}
+};
 
 class UsuarioController {
   static async getAllUsuarios(req, res) {

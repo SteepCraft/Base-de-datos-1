@@ -18,7 +18,7 @@ if (!JWT_SECRET) {
   // No hacemos throw aquí para no romper imports; pero signToken comprobará.
 }
 
-function parseDurationToMs(v) {
+const parseDurationToMs = (v) => {
   if (!v) return undefined;
   if (typeof v !== "string") return undefined;
   if (v.endsWith("h")) return parseInt(v.slice(0, -1), 10) * 3600 * 1000;
@@ -26,14 +26,14 @@ function parseDurationToMs(v) {
   if (v.endsWith("d")) return parseInt(v.slice(0, -1), 10) * 24 * 3600 * 1000;
   if (/^\d+$/.test(v)) return parseInt(v, 10) * 1000; // segundos
   return undefined;
-}
+};
 
-function signToken(payload) {
+const signToken = (payload) => {
   if (!JWT_SECRET) throw new Error("JWT_SECRET no configurado");
   return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
-}
+};
 
-function cookieOptions() {
+const cookieOptions = () => {
   const options = {
     httpOnly: true,
     secure: COOKIE_SECURE,
@@ -48,7 +48,7 @@ function cookieOptions() {
   }
 
   return options;
-}
+};
 
 class AuthController {
   static async login(req, res) {
@@ -128,15 +128,15 @@ class AuthController {
 
       // Enviar cookie NUEVA
       const options = cookieOptions();
-      console.log(
+      console.info(
         "🍪 Configurando cookie con opciones:",
         JSON.stringify(options, null, 2)
       );
-      console.log(
+      console.info(
         "🔑 JWT_SECRET actual:",
         JWT_SECRET ? `${JWT_SECRET.substring(0, 20)}...` : "NO DEFINIDO"
       );
-      console.log(
+      console.info(
         "📝 Token generado (primeros 50 chars):",
         `${token.substring(0, 50)}...`
       );
@@ -163,7 +163,7 @@ class AuthController {
     }
   }
 
-  static async logout(req, res) {
+  static logout(req, res) {
     try {
       const clearOptions = {
         httpOnly: true,
