@@ -19,7 +19,7 @@ const Compras = sequelize.define(
     },
 
     id_proveedor: {
-      type: DataTypes.STRING(20),
+      type: DataTypes.STRING(10),
       allowNull: true,
       field: "ID_PROVEEDOR",
     },

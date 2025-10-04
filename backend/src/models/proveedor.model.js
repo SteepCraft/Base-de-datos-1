@@ -21,17 +21,14 @@ const Proveedor = sequelize.define(
     },
     direccion: {
       type: DataTypes.STRING(50),
-      allowNull: false,
       field: "DIRECCION",
     },
     providencia: {
       type: DataTypes.STRING(50),
-      allowNull: false,
       field: "PROVIDENCIA",
     },
     telefono: {
       type: DataTypes.STRING(15),
-      allowNull: false,
       unique: true,
       field: "TELEFONO",
     },
