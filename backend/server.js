@@ -3,7 +3,7 @@ import app from "./app.js";
 const PORT = 3000;
 
 const server = app.listen(PORT, () => {
-  console.log(`Ges2l API corriendo en el puerto ${PORT}`);
+  console.log(`API corriendo en el puerto ${PORT}`);
   console.log(`Accede a http://localhost:${PORT}`);
 });
 
